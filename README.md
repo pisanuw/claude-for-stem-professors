@@ -2,11 +2,13 @@
 
 From zero to a deployed course app: the accounts, the tokens, and three projects you can put in front of students.
 
-You have seen the demos. A colleague types a sentence, an app appears, everyone claps. This guide gets you from clapping to shipping. No programming background required: if you can follow a recipe and copy-paste, you are qualified. The robot does the work. The repo holds the receipts.
+So, a colleague types a sentence, an app appears, and everyone claps. I have given that demo. What the demo skips is the hour of account setup that nobody enjoys and everybody survives, which is most of what this guide is. You pay that hour once.
 
-**Version: 21 Aug 2026.** Everything here was verified against the vendor documentation in August 2026. UIs move, so if a button has wandered, the linked docs are the source of truth. Later versions of this guide carry a later date at the top, so you can tell at a glance whether the copy in your hand is current.
+You do not need a programming background. If you can follow a recipe and copy-paste, you can do all of this. The robot does the work. The repo holds the receipts.
 
-**Prefer paper?** A PDF of this version is in the repo: [claude-for-stem-professors-2026-08-21.pdf](claude-for-stem-professors-2026-08-21.pdf). Links print with their URLs spelled out, so it works away from a screen. Rebuild it after edits with `./build-pdf.sh`.
+**Version: 21 Aug 2026.** I checked every click-path against the vendor docs in August 2026. Buttons wander. If something is not where I say it is, have a look at the linked docs and trust those instead. Later versions carry a later date up here so you can tell which copy you are holding.
+
+**Prefer paper?** The PDF of this version is in the repo: [claude-for-stem-professors-2026-08-21.pdf](claude-for-stem-professors-2026-08-21.pdf). Links print with their URLs spelled out so it still works away from a screen. Run `./build-pdf.sh` after edits to rebuild it.
 
 **The three destination projects** (details in [Part 6](#part-6-three-projects)):
 
@@ -19,7 +21,7 @@ You have seen the demos. A colleague types a sentence, an app appears, everyone 
 - A computer with a web browser. Parts 1 through 6 need nothing else.
 - About an hour for setup, then an afternoon per project.
 - Money: every service here has a free tier that is enough for these projects. Claude Pro ($20/month) is the one upgrade worth considering if you will use this weekly.
-- Coffee optional but traditional.
+- Coffee. I do this with a cortado at 6am, but you do you.
 
 ## Contents
 
@@ -44,7 +46,7 @@ You have seen the demos. A colleague types a sentence, an app appears, everyone 
 
 ### 1.2 Free vs Pro
 
-The Free plan is a real working tier, not a demo. The difference is mostly capacity.
+Free is a real working tier. The difference is mostly capacity.
 
 | | Free ($0) | Pro ($20/month, $17 if annual) |
 |---|---|---|
@@ -56,27 +58,27 @@ The Free plan is a real working tier, not a demo. The difference is mostly capac
 | Claude Code (Part 7) | No | Yes |
 | Advanced Research | No | Yes |
 
-My suggestion: start Free, do Project 1, and upgrade the first time the usage limit interrupts something that matters. Features shift every few months; [claude.com/pricing](https://claude.com/pricing) is the source of truth.
+I suggest starting on Free, doing Project 1, and upgrading the first time the limit stops you mid-thought. For some people that is week one. For some it never happens. This table also goes stale faster than anything else in the guide, so [claude.com/pricing](https://claude.com/pricing) wins any argument with it.
 
-If you do go Pro, [this referral link](https://claude.ai/referral/X0jtHxAOEA) gets you started and throws a small thank-you my way. Entirely optional; the guide works the same either way.
+If you do go Pro, [my referral link](https://claude.ai/referral/X0jtHxAOEA) throws a small thank-you my way. Feel free to ignore it. The guide is the same either way.
 
 **University note.** Some universities have institutional Claude for Education agreements with different data protections than a personal account. If yours does, use it, especially for anything touching Canvas ([Part 3.4](#34-canvas-access-token) explains why). Ask your IT or teaching-technology office.
 
 ### 1.3 Turn on network egress (do this in a browser)
 
-One setting makes a real difference and is easy to miss. In Claude's settings you will find:
+One setting is easy to miss and makes a real difference. In Claude's settings you will find this:
 
 > **Allow network egress**
 >
 > Give Claude network access to install packages and libraries in order to perform advanced data analysis, custom visualizations, and specialized file processing. Monitor chats closely as this comes with security risks.
 
-Without it, Claude's code environment is sealed off and cannot install the libraries that most data work needs. With it, Claude can pull down a plotting library, a PDF parser, a statistics package, whatever the task calls for. For the projects in this guide, turn it on.
+Without it, Claude's code environment is sealed off and cannot install the libraries that most data work needs. Turn it on and it can pull down a plotting library, a PDF parser, a statistics package, whatever the job needs. For the projects here, turn it on.
 
 **Where:** [claude.ai](https://claude.ai) in a web browser, then **Settings**, then **Capabilities**, then scroll to the **very bottom** of the page. It is the last item.
 
-**The catch:** the Claude phone app does not show this setting. You must do it once in a browser, on a laptop or desktop. Once set, it applies to your account, so your phone benefits too.
+**The catch:** the phone app does not show this setting at all. You have to do it once in a browser on a laptop or desktop. It then applies to your whole account, so your phone gets it too.
 
-**The warning is real, and it is worth understanding rather than just clicking past.** Network access means the code Claude runs on your behalf can reach the internet. Two consequences: Claude installs software written by strangers (the same trust you extend every time you install anything), and if you paste a token into a chat, a program running in that chat could in principle send it somewhere. Neither is exotic; both are why Part 5 says to rotate tokens after a session. Read what Claude proposes before approving it, the same way you would skim a script a student handed you. That is the whole discipline.
+That warning at the end is not boilerplate. Network access means the code Claude runs for you can reach the internet, and two things follow. It installs software written by strangers, which is the same bet you make every time you install anything. And a token you pasted into that chat could in principle be sent somewhere. This is why Part 5 nags about rotating tokens. Have a look at what Claude proposes before you approve it, the way you would skim a script a student emailed you.
 
 ---
 
@@ -86,9 +88,9 @@ Three accounts, all free, all reachable with the **Continue with Google** button
 
 **Which Google account?** Your UW account works fine for all three services, and it is the simpler answer: one login you already use daily, and your .edu address qualifies you for GitHub's free education benefits. Use it.
 
-Faculty do not change institutions often, so the "what if I leave" worry is smaller than it looks. If it ever happens, GitHub lets you add a second email and switch your primary address without losing a single repository. That is a five-minute task on a day you will have other things to think about, not a reason to complicate today.
+Faculty do not change institutions often, so the "what if I leave" worry is smaller than it looks. If it does happen, GitHub lets you add a second email and switch your primary address without losing a single repo. Five minutes, on a day when you will have bigger things to sort out.
 
-Two exceptions worth naming. Use a personal account if your work is genuinely personal (a consulting side project, a book, anything you would not want to explain to a department chair), or if UW IT restricts third-party sign-ins on your account, which some campus units do.
+Two exceptions. Use a personal account if the work is personal (consulting, a book, anything you would rather not explain to a chair), or if your campus IT blocks third-party sign-ins, which some units do.
 
 ### 2.1 GitHub
 
@@ -99,7 +101,7 @@ GitHub stores your code and its full history. Every project in this guide lives 
 3. Pick a username. It is public and hard to change, so choose something you would put on a syllabus.
 4. Complete the email or device verification code GitHub sends you.
 
-Two follow-ups worth doing now, in [github.com/settings/security](https://github.com/settings/security):
+Two things to do now, while you are in there. Both live in [github.com/settings/security](https://github.com/settings/security):
 
 - **Set a password or passkey.** Accounts created through Google have no password, which means no way in if your Google account is ever locked.
 - **Turn on two-factor authentication.** GitHub will nag you about this anyway.
@@ -124,7 +126,7 @@ Render hosts backends: apps with a server, a database, or a secret they must kee
 
 ## Part 3: Get your tokens
 
-A token is a password with a narrower job: it lets a program act as you on one service, without ever seeing your real password. The pattern in this guide is simple. You generate a token, you hand it to Claude in a chat, Claude does the work, and afterwards you delete or rotate the token. Treat every token exactly the way you treat a password, because functionally that is what it is.
+A token is a password with a narrower job. It lets a program act as you on one service without ever seeing your real password. The pattern is always the same: generate a token, hand it to Claude in a chat, let Claude do the work, then delete or rotate it. Treat a token like a password. That is what it is.
 
 Every token below is shown to you **exactly once**, at the moment of creation. Copy it somewhere safe (a password manager is the right place) before closing the page.
 
@@ -151,7 +153,7 @@ When the token expires, generating a new one takes two minutes and the old promp
 2. Click **Applications**, then under **Personal access tokens** click **New access token**. Direct link: [app.netlify.com/user/applications](https://app.netlify.com/user/applications).
 3. Name it, set an **expiration date**, click **Generate token**, copy it once.
 
-One quirk worth knowing: if you ever reset your Netlify password, all existing tokens die with it.
+One quirk: reset your Netlify password and every existing token dies with it.
 
 ### 3.3 Render API key
 
@@ -190,7 +192,7 @@ There are two ways Claude reaches your accounts, and this guide uses both.
 
 **Pasting a token in chat** works for everything else. You hand Claude a token in your message, Claude uses its built-in code environment to call the service's API, done. It is cruder but universal, and you control the blast radius by controlling the token. GitHub and Canvas use this route.
 
-One honest caveat about the paste route: the token sits in that conversation's history. Delete the conversation when the work is finished, or rotate the token. Either is fine; doing neither is not.
+One caveat about the paste route: the token sits in that conversation's history afterwards. Delete the conversation when the work is done, or rotate the token. Pick one and actually do it.
 
 ### 4.1 Where connectors live
 
@@ -230,7 +232,7 @@ No connector needed. In any chat, hand Claude the classic token from [3.1](#31-g
 >
 > Create a public repo called `test-drive` under my account, add a README that says hello, and send me the link. Do not put the token in any file.
 
-Claude uses its code environment to run `git` and the GitHub API with your token. The "do not put the token in any file" line is belt-and-suspenders; say it anyway.
+Claude uses its code environment to run `git` and call the GitHub API with your token. That last line about not putting the token in a file is belt-and-braces. Say it anyway.
 
 ### 4.5 Canvas (paste the token)
 
@@ -246,11 +248,11 @@ Start read-only. Once you trust the setup, you can allow writes (posting an anno
 
 ## Part 5: Token hygiene
 
-Six rules. They take less time to follow than a single compromised account takes to clean up.
+Six rules. All six together take less time than cleaning up one compromised account.
 
 1. **One token per purpose**, named for the job. Never reuse a token across unrelated projects.
 2. **Always set an expiration.** 90 days on GitHub, explicit dates on Netlify, Render (where offered), and Canvas.
-3. **Tokens never go in files.** Not in code, not in a README, not in a repo. Tell Claude this explicitly when it builds anything. For deployed apps, secrets go in the hosting service's environment variables (Project 3 shows how).
+3. **Tokens never go in files.** Not in code, not in a README, not anywhere in a repo. Tell Claude this explicitly every time it builds something. For deployed apps, secrets belong in the hosting service's environment variables (Project 3 shows how).
 4. **Delete or rotate after a heavy session.** Especially any session where a token was pasted into chat. Rotation costs two minutes.
 5. **If a token leaks**, revoke it first and investigate second. Every service above has a revoke/delete button next to the token list.
 6. **Canvas tokens outrank the other rules.** They reach student data. Your institution's policy beats anything in this guide.
@@ -259,11 +261,11 @@ Six rules. They take less time to follow than a single compromised account takes
 
 ## Part 6: Three projects
 
-Each project below includes a starter prompt. Paste it into a fresh Claude chat, fill in the CAPITALIZED placeholders, and adjust freely: the prompt is a first draft, not a contract. Expect a little back-and-forth; that is the normal working mode, not a failure.
+Each project has a starter prompt. Paste it into a fresh chat, fill in the CAPITALIZED bits, change whatever you like. Expect some back and forth before it is right. That is how this works.
 
-**Every starter prompt ends with "Ask me any questions before you start."** Keep that line. It is the single highest-value habit in this guide. Claude will guess when it does not know, and its guesses are plausible and wrong in exactly the ways that waste your afternoon: inventing your office hours, assuming a 10-week schedule, picking a framework you did not want. Asked to check first, it will come back with three questions and then build the thing you actually meant.
+**Every starter prompt ends with "Ask me any questions before you start."** Keep that line. I think it is the most useful sentence in this guide. Claude guesses when it does not know, and the guesses are plausible and wrong in the ways that eat your afternoon: invented office hours, a 10-week schedule, some framework you never asked for. Told to check first, it comes back with three questions and then builds the thing you meant.
 
-The habit runs both directions. When something confuses you, ask. "Why did you pick React here?" "What does 'deploy' actually mean?" "Explain what that command did, I do not recognize it." Nobody is judging the question, and you cannot exhaust its patience. Treat it like a colleague who happens to have read all the documentation.
+It runs the other way too. When something confuses you, ask. "Why React here?" "What does deploy actually mean?" "Explain that command, I do not recognize it." You cannot wear out its patience, and nobody else is watching. Treat it like a colleague who happens to have read all the documentation.
 
 ### Project 1: Course website (30 to 60 minutes)
 
@@ -271,9 +273,9 @@ The habit runs both directions. When something confuses you, ask. "Why did you p
 
 **You need.** GitHub token (3.1), Netlify connector (4.2). Enable the Netlify connector in the chat.
 
-**Start from last year's syllabus.** This is the shortcut. Drag your existing syllabus into the chat (Word, PDF, or a Canvas page pasted as text) and let Claude pull the structure out of it: course description, learning objectives, grading breakdown, policies, week-by-week topics. You spend your time correcting a draft instead of dictating one from scratch, and the result sounds like your course because it came from your course.
+**Start from last year's syllabus.** This is the shortcut. Drag your existing syllabus into the chat (Word, PDF, or a Canvas page pasted in as text) and let Claude pull the structure out of it: description, objectives, grading breakdown, policies, weekly topics. Correcting a draft is much faster than dictating one, and the result sounds like your course because it came from your course.
 
-If you have no syllabus handy, the prompt below works from a blank page. Both routes end in the same place.
+No syllabus handy? The second prompt starts from a blank page. Both end up in the same place.
 
 **With a syllabus to upload:**
 
@@ -334,7 +336,7 @@ dates on the closure days, and do not silently shift material into
 finals week.
 ```
 
-Not at UW? Substitute your own academic calendar in the same shape. The eleven-week quarter is a UW quirk and worth stating explicitly, because otherwise Claude will reasonably assume a fifteen-week semester and hand you a schedule with four weeks that do not exist.
+Not at UW? Swap in your own calendar in the same shape. Spell out the length either way. The eleven-week Autumn quarter is a UW oddity, and left to itself Claude assumes a fifteen-week semester and hands you a schedule with four weeks that do not exist.
 
 **Then try.** "Change my office hours to Wednesdays 1-3pm and redeploy." "Add a resources page with these five links." "The Thanksgiving week only has two class days, rebalance the topics." Each edit lands in the repo, so you have the full history.
 
@@ -372,7 +374,7 @@ Ask me any questions before you start.
 
 **Then try.** Paste in your own question bank ("replace the questions with these 20"). Upload an old problem set or exam and ask Claude to build the quiz from those problems instead of inventing new ones. Ask for LaTeX-rendered math if your subject needs it. Ask for a topic filter if you add more questions.
 
-**Review the questions before sharing.** Claude writes plausible questions; you are the subject-matter check. This is the same review you would give a new TA's problem set, and it goes fast.
+**Read the questions before you share the link.** Claude writes plausible questions. You are the one who knows if they are right. Same review you would give a new TA's problem set, and it goes quickly. Fluency is not accuracy.
 
 ### Project 3: Canvas assistant (an afternoon)
 
@@ -413,7 +415,7 @@ a time), deploy, and give me the URL.
 Ask me any questions before you start.
 ```
 
-**Then try.** "Add a page that flags students with no submissions in the last two weeks." "Draft individual nudge emails I can review." Keep the app in draft-and-review mode: the professor clicks send, not the robot.
+**Then try.** "Add a page that flags students with no submissions in the last two weeks." "Draft individual nudge emails I can review." Keep the whole thing in draft-and-review mode. The professor clicks send.
 
 **Free-tier reality.** The free Render service sleeps when idle; the first load after a quiet spell takes a moment. Fine for a personal dashboard.
 
@@ -423,7 +425,7 @@ Ask me any questions before you start.
 
 Everything so far runs in the claude.ai chat. Claude Code is the same Claude working in a terminal on your own computer: it reads and edits files in a folder, runs programs, and uses git directly. Worth adopting when projects outgrow the chat window, when you want the files local, or when a session should pick up exactly where the last one stopped.
 
-Two facts up front. It needs a paid plan (Pro or higher; it is included in the subscription, so there is no per-use metering and no API key to manage). And it lives in a terminal, which sounds scarier than it is: you type English at it, same as the chat.
+Two things up front. It needs a paid plan (Pro or higher, included in the subscription, so no per-use metering and no API key to look after). And it lives in a terminal, which sounds worse than it is. You type English at it, same as the chat.
 
 ### Install
 
@@ -448,7 +450,7 @@ mkdir my-first-project && cd my-first-project
 claude
 ```
 
-On first run, choose to log in with your **Claude.ai account** and approve in the browser. Then talk to it: "Build the Project 2 quiz app in this folder." Claude Code asks permission before changing files or running commands; read what it proposes before saying yes, at least until trust is earned.
+On first run, pick **Claude.ai account** and approve in the browser. Then just talk to it: "Build the Project 2 quiz app in this folder." It asks permission before changing files or running commands. Read what it proposes before you say yes, at least until it has earned some trust.
 
 ### Connect Netlify and Render
 
@@ -461,7 +463,7 @@ claude mcp add --transport http --client-id claude render https://mcp.render.com
 
 Then inside a session, type `/mcp` and authenticate each one in the browser. Your GitHub token gets pasted into the session the same way as in chat, or configured once with `git` credentials if you go further down this road.
 
-### Two habits worth stealing
+### Two habits
 
 - Run `/init` in a project folder once: Claude Code writes a `CLAUDE.md` file describing the project, which future sessions read automatically. Standing instructions ("never commit tokens", "log changes in CHANGES.md") belong there.
 - Prefer terminal-free? The Claude Code **VS Code extension** gives the same tool a graphical home.
@@ -474,11 +476,11 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 
 **Claude says it cannot install a package, or a data-analysis step fails.** Network egress is off. Turn it on in a browser: **Settings > Capabilities**, very bottom of the page ([Part 1.3](#13-turn-on-network-egress-do-this-in-a-browser)). The phone app does not show this setting.
 
-**Claude built something different from what you meant.** You did not ask it to ask. Add "Ask me any questions before you start" and rerun; it costs one extra exchange and saves the rebuild.
+**Claude built something different from what you meant.** You did not ask it to ask. Add "Ask me any questions before you start" and run it again. One extra exchange, and you skip the rebuild.
 
 **"Bad credentials" or 401 when Claude uses a token.** The token expired, a scope is missing (GitHub needs `repo` and `workflow`), or the paste picked up a stray space. Generate a fresh one; it is faster than debugging.
 
-**Canvas has no "Approved Integrations" section.** Your institution disabled self-service tokens. Ask LMS support; several universities issue tokens through a request form instead.
+**Canvas has no "Approved Integrations" section.** Your institution turned off self-service tokens. Ask LMS support. Several universities hand them out through a request form instead.
 
 **Claude ignores a connector.** Enable it for that conversation: **+** button at the lower left of the message box, then **Connectors**, toggle it on. Also confirm it shows as connected on the Connectors settings page.
 
@@ -487,6 +489,8 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 **Render app is slow on first load.** Free services sleep when idle. It wakes on its own; wait a moment and reload.
 
 **You hit the usage limit mid-project.** It resets on a rolling 5-hour window. Come back after the reset, or take it as your sign about Pro.
+
+**Everything worked yesterday and today it does not.** Something upstream changed, or a token quietly expired. Paste the error into the chat and ask Claude what broke. It is better at reading its own stack traces than you would expect.
 
 **A token got committed to a repo by accident.** Revoke it immediately (the service's token page has a delete button), then generate a new one. Revoking first makes the leaked copy worthless; cleaning git history is optional afterwards.
 
@@ -501,4 +505,6 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 
 ---
 
-Version 21 Aug 2026. Maintained by [Yusuf Pisan](https://github.com/pisanuw), <pisan@uw.edu>. Corrections and questions: email me or open an issue. Written for colleagues who suspect this stuff might be useful but have not had a free afternoon to find out. Now you have a map for the afternoon. :-)
+Version 21 Aug 2026. Maintained by [Yusuf Pisan](https://github.com/pisanuw), <pisan@uw.edu>. Corrections and questions: email me or open an issue.
+
+Written for colleagues who suspect this stuff might be useful but have not had a free afternoon to find out. Now you have a map for the afternoon. Let me know how it goes. :-)

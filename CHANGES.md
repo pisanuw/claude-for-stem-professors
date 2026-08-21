@@ -2,6 +2,10 @@
 
 ## 2026-08-21
 
+- Prose revised throughout for voice (write-like-pisan): cut the AI tells,
+  including seven "worth knowing" constructions, stacked "X, not Y" endings,
+  and the habit of closing every paragraph on an aphorism. Added hedging,
+  contractions, and Australian residue. PDF rebuilt to match.
 - Version label added (21 Aug 2026) at the top and in the footer, so
   future revisions can be compared.
 - Contact email pisan@uw.edu added to the maintainer line.
