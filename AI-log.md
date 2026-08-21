@@ -27,4 +27,10 @@ Verbatim user instructions are logged before work begins.
 > Q: Reader plan assumption? (My pick: personal Pro baseline, one-line UW note)
 > A: Cover Claude Free and Claude Pro
 
-**Work performed:** Verified all click-paths via web search against vendor docs (GitHub, Netlify, Render, Canvas/Instructure, Anthropic support and Claude Code docs) on 2026-08-20. Wrote README.md guide (accounts, tokens, Claude connections, security practices, three starter projects, Claude Code appendix, troubleshooting). Created repo scaffolding (AI-log.md, CHANGES.md). Push to GitHub pending PAT.
+**Work performed:** Verified all click-paths via web search against vendor docs (GitHub, Netlify, Render, Canvas/Instructure, Anthropic support and Claude Code docs) on 2026-08-20. Wrote README.md guide (accounts, tokens, Claude connections, security practices, three starter projects, Claude Code appendix, troubleshooting). Created repo scaffolding (AI-log.md, CHANGES.md).
+
+**Instruction 2 (verbatim, token redacted):**
+
+> Use ghp_[REDACTED] to create a repo
+
+**Work performed:** Verified PAT (scopes: repo, workflow, admin:repo_hook, write:packages, delete:packages). Created public repo pisanuw/claude-for-stem-professors. Committed and pushed AI-log.md, CHANGES.md, README.md to main. Credential was used inline for the push only and removed from the stored remote URL afterwards; origin is set to the plain HTTPS URL.
