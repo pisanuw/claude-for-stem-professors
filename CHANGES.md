@@ -2,6 +2,8 @@
 
 ## 2026-08-21
 
+- Account recommendation switched to the UW Google account (was personal),
+  with exceptions noted for personal work and restricted IT policies.
 - Removed AI-log.md; convention discontinued.
 - Fall 2026 renamed to Autumn 2026 throughout.
 - Added UW Autumn 2026 calendar block to Project 1: instruction Sept 30 to

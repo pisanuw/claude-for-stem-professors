@@ -82,7 +82,11 @@ Without it, Claude's code environment is sealed off and cannot install the libra
 
 Three accounts, all free, all reachable with the **Continue with Google** button. Ten minutes total.
 
-**Which Google account?** I suggest your personal one. University Google accounts get deactivated when you change jobs; your GitHub account and its repositories should outlive any single employer. You can add your .edu address to GitHub later for education benefits.
+**Which Google account?** Your UW account works fine for all three services, and it is the simpler answer: one login you already use daily, and your .edu address qualifies you for GitHub's free education benefits. Use it.
+
+Faculty do not change institutions often, so the "what if I leave" worry is smaller than it looks. If it ever happens, GitHub lets you add a second email and switch your primary address without losing a single repository. That is a five-minute task on a day you will have other things to think about, not a reason to complicate today.
+
+Two exceptions worth naming. Use a personal account if your work is genuinely personal (a consulting side project, a book, anything you would not want to explain to a department chair), or if UW IT restricts third-party sign-ins on your account, which some campus units do.
 
 ### 2.1 GitHub
 
