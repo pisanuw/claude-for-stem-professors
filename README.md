@@ -56,7 +56,25 @@ The Free plan is a real working tier, not a demo. The difference is mostly capac
 
 My suggestion: start Free, do Project 1, and upgrade the first time the usage limit interrupts something that matters. Features shift every few months; [claude.com/pricing](https://claude.com/pricing) is the source of truth.
 
+If you do go Pro, [this referral link](https://claude.ai/referral/X0jtHxAOEA) gets you started and throws a small thank-you my way. Entirely optional; the guide works the same either way.
+
 **University note.** Some universities have institutional Claude for Education agreements with different data protections than a personal account. If yours does, use it, especially for anything touching Canvas ([Part 3.4](#34-canvas-access-token) explains why). Ask your IT or teaching-technology office.
+
+### 1.3 Turn on network egress (do this in a browser)
+
+One setting makes a real difference and is easy to miss. In Claude's settings you will find:
+
+> **Allow network egress**
+>
+> Give Claude network access to install packages and libraries in order to perform advanced data analysis, custom visualizations, and specialized file processing. Monitor chats closely as this comes with security risks.
+
+Without it, Claude's code environment is sealed off and cannot install the libraries that most data work needs. With it, Claude can pull down a plotting library, a PDF parser, a statistics package, whatever the task calls for. For the projects in this guide, turn it on.
+
+**Where:** [claude.ai](https://claude.ai) in a web browser, then **Settings**, then **Capabilities**, then scroll to the **very bottom** of the page. It is the last item.
+
+**The catch:** the Claude phone app does not show this setting. You must do it once in a browser, on a laptop or desktop. Once set, it applies to your account, so your phone benefits too.
+
+**The warning is real, and it is worth understanding rather than just clicking past.** Network access means the code Claude runs on your behalf can reach the internet. Two consequences: Claude installs software written by strangers (the same trust you extend every time you install anything), and if you paste a token into a chat, a program running in that chat could in principle send it somewhere. Neither is exotic; both are why Part 5 says to rotate tokens after a session. Read what Claude proposes before approving it, the same way you would skim a script a student handed you. That is the whole discipline.
 
 ---
 
@@ -237,30 +255,82 @@ Six rules. They take less time to follow than a single compromised account takes
 
 Each project below includes a starter prompt. Paste it into a fresh Claude chat, fill in the CAPITALIZED placeholders, and adjust freely: the prompt is a first draft, not a contract. Expect a little back-and-forth; that is the normal working mode, not a failure.
 
+**Every starter prompt ends with "Ask me any questions before you start."** Keep that line. It is the single highest-value habit in this guide. Claude will guess when it does not know, and its guesses are plausible and wrong in exactly the ways that waste your afternoon: inventing your office hours, assuming a 10-week schedule, picking a framework you did not want. Asked to check first, it will come back with three questions and then build the thing you actually meant.
+
+The habit runs both directions. When something confuses you, ask. "Why did you pick React here?" "What does 'deploy' actually mean?" "Explain what that command did, I do not recognize it." Nobody is judging the question, and you cannot exhaust its patience. Treat it like a colleague who happens to have read all the documentation.
+
 ### Project 1: Course website (30 to 60 minutes)
 
 **What you get.** A public course site: description, schedule, office hours, policies. Version-controlled on GitHub, live on Netlify, updated by asking Claude for edits.
 
 **You need.** GitHub token (3.1), Netlify connector (4.2). Enable the Netlify connector in the chat.
 
-**Starter prompt:**
+**Start from last year's syllabus.** This is the shortcut. Drag your existing syllabus into the chat (Word, PDF, or a Canvas page pasted as text) and let Claude pull the structure out of it: course description, learning objectives, grading breakdown, policies, week-by-week topics. You spend your time correcting a draft instead of dictating one from scratch, and the result sounds like your course because it came from your course.
+
+If you have no syllabus handy, the prompt below works from a blank page. Both routes end in the same place.
+
+**With a syllabus to upload:**
+
+```text
+Here is my GitHub token: PASTE_GITHUB_TOKEN
+
+Attached is my syllabus from last year. Build a course website from it
+for COURSE NUMBER: COURSE TITLE, Autumn 2026.
+
+Pull the course description, objectives, grading breakdown, and policies
+from the syllabus. Flag anything that looks out of date (old dates, old
+textbook editions, dead links) instead of copying it forward silently.
+Rebuild the schedule against the Autumn 2026 calendar below.
+
+Clean and readable, works on phones, no frameworks needed. Create a
+public GitHub repo called COURSE-NUMBER-website under my account and
+push everything. Do not put the token in any file.
+
+Then deploy to Netlify using the Netlify connector and give me the URL.
+
+Ask me any questions before you start.
+```
+
+**Starting from scratch:**
 
 ```text
 Here is my GitHub token: PASTE_GITHUB_TOKEN
 
 Create a public GitHub repo called COURSE-NUMBER-website under my account.
-Build a course website for COURSE NUMBER: COURSE TITLE, FALL 2026.
+Build a course website for COURSE NUMBER: COURSE TITLE, Autumn 2026.
 Pages: home (course description, instructor, office hours: YOUR HOURS),
-a week-by-week schedule (12 weeks, topics: LIST A FEW), and a policies page
-(late work, collaboration, AI use). Clean and readable, works on phones,
-no frameworks needed. Push everything to the repo. Do not put the token
-in any file.
+a week-by-week schedule built on the Autumn 2026 calendar below, and a
+policies page (late work, collaboration, AI use). Clean and readable,
+works on phones, no frameworks needed. Push everything to the repo. Do
+not put the token in any file.
 
 Then deploy the site to Netlify using the Netlify connector and give me
 the live URL.
+
+Ask me any questions before you start.
 ```
 
-**Then try.** "Change my office hours to Wednesdays 1-3pm and redeploy." "Add a resources page with these five links." Each edit lands in the repo, so you have the full history.
+**Paste this calendar block into either prompt** (University of Washington, Autumn 2026):
+
+```text
+UW Autumn 2026 quarter calendar:
+- Instruction: September 30 (Wednesday) through December 11 (Friday)
+- Length: 11 weeks. Note that Autumn is the long quarter at UW;
+  Winter and Spring are 10 weeks.
+- Week 1 is a partial week: Wednesday through Friday.
+- Finals: December 12 through December 18
+- No classes: Veterans Day, November 11 (Wednesday)
+- No classes: Thanksgiving, November 26 (Thursday)
+- No classes: Native American Heritage Day, November 27 (Friday)
+
+Build the schedule around these dates. Do not schedule content or due
+dates on the closure days, and do not silently shift material into
+finals week.
+```
+
+Not at UW? Substitute your own academic calendar in the same shape. The eleven-week quarter is a UW quirk and worth stating explicitly, because otherwise Claude will reasonably assume a fifteen-week semester and hand you a schedule with four weeks that do not exist.
+
+**Then try.** "Change my office hours to Wednesdays 1-3pm and redeploy." "Add a resources page with these five links." "The Thanksgiving week only has two class days, rebalance the topics." Each edit lands in the repo, so you have the full history.
 
 **Stretch.** Point a custom domain at it, or ask Claude to add your publications page.
 
@@ -290,9 +360,11 @@ problems in first-year chemistry"). Requirements:
 
 Push to the repo, deploy to Netlify with the Netlify connector, give me
 the URL.
+
+Ask me any questions before you start.
 ```
 
-**Then try.** Paste in your own question bank ("replace the questions with these 20"). Ask for LaTeX-rendered math if your subject needs it. Ask for a topic filter if you add more questions.
+**Then try.** Paste in your own question bank ("replace the questions with these 20"). Upload an old problem set or exam and ask Claude to build the quiz from those problems instead of inventing new ones. Ask for LaTeX-rendered math if your subject needs it. Ask for a topic filter if you add more questions.
 
 **Review the questions before sharing.** Claude writes plausible questions; you are the subject-matter check. This is the same review you would give a new TA's problem set, and it goes fast.
 
@@ -331,6 +403,8 @@ Never write any token or password into the code or the repo.
 Then use the Render connector to create a free web service from the
 repo, set the three environment variables (ask me for the values one at
 a time), deploy, and give me the URL.
+
+Ask me any questions before you start.
 ```
 
 **Then try.** "Add a page that flags students with no submissions in the last two weeks." "Draft individual nudge emails I can review." Keep the app in draft-and-review mode: the professor clicks send, not the robot.
@@ -391,6 +465,10 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 ---
 
 ## Troubleshooting
+
+**Claude says it cannot install a package, or a data-analysis step fails.** Network egress is off. Turn it on in a browser: **Settings > Capabilities**, very bottom of the page ([Part 1.3](#13-turn-on-network-egress-do-this-in-a-browser)). The phone app does not show this setting.
+
+**Claude built something different from what you meant.** You did not ask it to ask. Add "Ask me any questions before you start" and rerun; it costs one extra exchange and saves the rebuild.
 
 **"Bad credentials" or 401 when Claude uses a token.** The token expired, a scope is missing (GitHub needs `repo` and `workflow`), or the paste picked up a stray space. Generate a fresh one; it is faster than debugging.
 
