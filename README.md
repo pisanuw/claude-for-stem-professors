@@ -4,7 +4,7 @@ From zero to a deployed course app: the accounts, the tokens, and three projects
 
 So, a colleague types a sentence, an app appears, and everyone claps. I have given that demo. What the demo skips is the hour of account setup that nobody enjoys and everybody survives, which is most of what this guide is. You pay that hour once.
 
-You do not need a programming background. If you can follow a recipe and copy-paste, you can do all of this. The robot does the work. The repo holds the receipts.
+You do not need a programming background. If you can follow a recipe and copy-paste, you can do all of this.
 
 **Version: 21 Aug 2026.** I checked every click-path against the vendor docs in August 2026. Buttons wander. If something is not where I say it is, have a look at the linked docs and trust those instead. Later versions carry a later date up here so you can tell which copy you are holding.
 
