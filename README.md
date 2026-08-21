@@ -4,7 +4,9 @@ From zero to a deployed course app: the accounts, the tokens, and three projects
 
 You have seen the demos. A colleague types a sentence, an app appears, everyone claps. This guide gets you from clapping to shipping. No programming background required: if you can follow a recipe and copy-paste, you are qualified. The robot does the work. The repo holds the receipts.
 
-Everything here was verified against the vendor documentation in August 2026. UIs move, so if a button has wandered, the linked docs are the source of truth.
+**Version: 21 Aug 2026.** Everything here was verified against the vendor documentation in August 2026. UIs move, so if a button has wandered, the linked docs are the source of truth. Later versions of this guide carry a later date at the top, so you can tell at a glance whether the copy in your hand is current.
+
+**Prefer paper?** A PDF of this version is in the repo: [claude-for-stem-professors-2026-08-21.pdf](claude-for-stem-professors-2026-08-21.pdf). Links print with their URLs spelled out, so it works away from a screen. Rebuild it after edits with `./build-pdf.sh`.
 
 **The three destination projects** (details in [Part 6](#part-6-three-projects)):
 
@@ -499,4 +501,4 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 
 ---
 
-Maintained by [Yusuf Pisan](https://github.com/pisanuw). Corrections and questions: open an issue. Written for colleagues who suspect this stuff might be useful but have not had a free afternoon to find out. Now you have a map for the afternoon. :-)
+Version 21 Aug 2026. Maintained by [Yusuf Pisan](https://github.com/pisanuw), <pisan@uw.edu>. Corrections and questions: email me or open an issue. Written for colleagues who suspect this stuff might be useful but have not had a free afternoon to find out. Now you have a map for the afternoon. :-)

@@ -1,0 +1,136 @@
+/* Print styling for the PDF build of README.md. See build-pdf.sh */
+
+@page {
+  size: letter;
+  margin: 0.85in 0.8in 0.9in 0.8in;
+
+  @bottom-left {
+    content: "Claude for STEM Professors, 21 Aug 2026";
+    font-family: "DejaVu Sans", Helvetica, sans-serif;
+    font-size: 7.5pt;
+    color: #777;
+  }
+  @bottom-right {
+    content: "Page " counter(page) " of " counter(pages);
+    font-family: "DejaVu Sans", Helvetica, sans-serif;
+    font-size: 7.5pt;
+    color: #777;
+  }
+}
+
+@page :first {
+  @bottom-left { content: ""; }
+  @bottom-right { content: ""; }
+}
+
+body {
+  font-family: "DejaVu Serif", Georgia, serif;
+  font-size: 10.5pt;
+  line-height: 1.45;
+  color: #1a1a1a;
+  max-width: none;
+}
+
+h1 {
+  font-family: "DejaVu Sans", Helvetica, Arial, sans-serif;
+  font-size: 22pt;
+  margin: 0 0 0.15em 0;
+  padding-bottom: 0.2em;
+  border-bottom: 2px solid #333;
+}
+
+h2 {
+  font-family: "DejaVu Sans", Helvetica, Arial, sans-serif;
+  font-size: 15pt;
+  margin-top: 1.4em;
+  padding-bottom: 0.15em;
+  border-bottom: 1px solid #bbb;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-family: "DejaVu Sans", Helvetica, Arial, sans-serif;
+  font-size: 12pt;
+  margin-top: 1.2em;
+  page-break-after: avoid;
+}
+
+h4 {
+  font-family: "DejaVu Sans", Helvetica, Arial, sans-serif;
+  font-size: 10.5pt;
+  page-break-after: avoid;
+}
+
+p, li { orphans: 2; widows: 2; }
+
+a { color: #12507b; text-decoration: none; }
+
+/* Print the URL after external links so the PDF stays usable on paper */
+a[href^="http"]::after {
+  content: " (" attr(href) ")";
+  font-size: 7.5pt;
+  color: #666;
+  word-break: break-all;
+}
+/* except inside headings and the contents list, where it would be noise */
+h1 a::after, h2 a::after, h3 a::after, #contents-list a::after { content: ""; }
+
+code {
+  font-family: "DejaVu Sans Mono", Consolas, monospace;
+  font-size: 8.5pt;
+  background: #f2f2f2;
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+}
+
+pre {
+  background: #f6f6f6;
+  font-size: 7.6pt;
+  border: 1px solid #ddd;
+  border-left: 3px solid #888;
+  padding: 0.6em 0.8em;
+  border-radius: 3px;
+  page-break-inside: avoid;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 7.6pt;
+  line-height: 1.32;
+}
+
+blockquote {
+  margin: 0.8em 0;
+  padding: 0.4em 0 0.4em 0.9em;
+  border-left: 3px solid #b9b9b9;
+  color: #333;
+  background: #fafafa;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 9pt;
+  margin: 0.8em 0;
+  page-break-inside: avoid;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 0.35em 0.5em;
+  text-align: left;
+  vertical-align: top;
+}
+
+th { background: #efefef; font-family: "DejaVu Sans", Helvetica, sans-serif; }
+
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 1.6em 0;
+}
+
+strong { color: #000; }
