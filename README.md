@@ -1,0 +1,420 @@
+# Claude for STEM Professors
+
+From zero to a deployed course app: the accounts, the tokens, and three projects you can put in front of students.
+
+You have seen the demos. A colleague types a sentence, an app appears, everyone claps. This guide gets you from clapping to shipping. No programming background required: if you can follow a recipe and copy-paste, you are qualified. The robot does the work. The repo holds the receipts.
+
+Everything here was verified against the vendor documentation in August 2026. UIs move, so if a button has wandered, the linked docs are the source of truth.
+
+**The three destination projects** (details in [Part 6](#part-6-three-projects)):
+
+1. **A course website**, built and deployed to Netlify in under an hour
+2. **A practice-problem app** for your subject, auto-graded, students use it before exams
+3. **A Canvas assistant** that pulls your roster and assignment data and drafts announcements, running on Render
+
+## What you need
+
+- A computer with a web browser. Parts 1 through 6 need nothing else.
+- About an hour for setup, then an afternoon per project.
+- Money: every service here has a free tier that is enough for these projects. Claude Pro ($20/month) is the one upgrade worth considering if you will use this weekly.
+- Coffee optional but traditional.
+
+## Contents
+
+- [Part 1: Set up Claude](#part-1-set-up-claude)
+- [Part 2: Create your accounts](#part-2-create-your-accounts)
+- [Part 3: Get your tokens](#part-3-get-your-tokens)
+- [Part 4: Connect Claude to your accounts](#part-4-connect-claude-to-your-accounts)
+- [Part 5: Token hygiene](#part-5-token-hygiene)
+- [Part 6: Three projects](#part-6-three-projects)
+- [Part 7: Appendix, Claude Code](#part-7-appendix-claude-code)
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## Part 1: Set up Claude
+
+### 1.1 Create a Claude account
+
+1. Go to [claude.ai](https://claude.ai).
+2. Click **Continue with Google** and pick your Google account.
+3. Done. You are on the Free plan.
+
+### 1.2 Free vs Pro
+
+The Free plan is a real working tier, not a demo. The difference is mostly capacity.
+
+| | Free ($0) | Pro ($20/month, $17 if annual) |
+|---|---|---|
+| Usage | Limited budget that resets every 5 hours | At least 5x Free, plus a weekly cap |
+| Chat, web search, file uploads | Yes | Yes |
+| Projects, Artifacts, file creation | Yes | Yes |
+| Connectors (Part 4) | Directory connectors, plus **one** custom connector | Directory plus custom connectors |
+| Model choice | Current default model | Full model picker, including the strongest models |
+| Claude Code (Part 7) | No | Yes |
+| Advanced Research | No | Yes |
+
+My suggestion: start Free, do Project 1, and upgrade the first time the usage limit interrupts something that matters. Features shift every few months; [claude.com/pricing](https://claude.com/pricing) is the source of truth.
+
+**University note.** Some universities have institutional Claude for Education agreements with different data protections than a personal account. If yours does, use it, especially for anything touching Canvas ([Part 3.4](#34-canvas-access-token) explains why). Ask your IT or teaching-technology office.
+
+---
+
+## Part 2: Create your accounts
+
+Three accounts, all free, all reachable with the **Continue with Google** button. Ten minutes total.
+
+**Which Google account?** I suggest your personal one. University Google accounts get deactivated when you change jobs; your GitHub account and its repositories should outlive any single employer. You can add your .edu address to GitHub later for education benefits.
+
+### 2.1 GitHub
+
+GitHub stores your code and its full history. Every project in this guide lives in a GitHub repository.
+
+1. Go to [github.com/signup](https://github.com/signup).
+2. Click **Continue with Google** and choose your account. (Google login for GitHub has existed since mid-2025; if you last looked before that, it is new.)
+3. Pick a username. It is public and hard to change, so choose something you would put on a syllabus.
+4. Complete the email or device verification code GitHub sends you.
+
+Two follow-ups worth doing now, in [github.com/settings/security](https://github.com/settings/security):
+
+- **Set a password or passkey.** Accounts created through Google have no password, which means no way in if your Google account is ever locked.
+- **Turn on two-factor authentication.** GitHub will nag you about this anyway.
+
+### 2.2 Netlify
+
+Netlify hosts websites and frontend apps: your course site, your quiz app. The free tier is generous and fine for a class.
+
+1. Go to [app.netlify.com/signup](https://app.netlify.com/signup).
+2. Click **Sign up with Google**. (GitHub, GitLab, Bitbucket, and email also work. Signing up with GitHub saves one password and makes repo linking slightly smoother later, but Google is fine.)
+3. Answer or skip the onboarding questions. You land on an empty dashboard. Good.
+
+### 2.3 Render
+
+Render hosts backends: apps with a server, a database, or a secret they must keep (like your Canvas token in Project 3). Free-tier services sleep when idle and take a moment to wake up, which is fine for a personal tool. Details at [render.com/docs/free](https://render.com/docs/free).
+
+1. Go to [dashboard.render.com/register](https://dashboard.render.com/register).
+2. Click the **Google** button. (GitHub, GitLab, and email also work.)
+3. Confirm your email if asked. You land on an empty dashboard.
+
+---
+
+## Part 3: Get your tokens
+
+A token is a password with a narrower job: it lets a program act as you on one service, without ever seeing your real password. The pattern in this guide is simple. You generate a token, you hand it to Claude in a chat, Claude does the work, and afterwards you delete or rotate the token. Treat every token exactly the way you treat a password, because functionally that is what it is.
+
+Every token below is shown to you **exactly once**, at the moment of creation. Copy it somewhere safe (a password manager is the right place) before closing the page.
+
+### 3.1 GitHub classic token
+
+This is the workhorse. With it, Claude can create repositories, push code, and set up deploy pipelines on your behalf.
+
+1. On [github.com](https://github.com), click your profile photo (top right), then **Settings**.
+2. In the left sidebar, scroll to the bottom and click **Developer settings**.
+3. Click **Personal access tokens**, then **Tokens (classic)**. Direct link: [github.com/settings/tokens](https://github.com/settings/tokens).
+4. Click **Generate new token**, then **Generate new token (classic)**. GitHub may ask you to re-authenticate.
+5. **Note**: name it for its job, e.g. `claude-course-projects`.
+6. **Expiration**: 90 days. Do not pick "no expiration"; future-you will forget this token exists.
+7. **Scopes**: check the entire **repo** box, and check **workflow**. The first lets Claude manage repositories; the second lets it set up automated deploys. Leave everything else unchecked.
+8. Click **Generate token** and copy the token (it starts with `ghp_`). This is the only time you will see it.
+
+When the token expires, generating a new one takes two minutes and the old prompts still work.
+
+### 3.2 Netlify personal access token
+
+**You may not need this one.** The Netlify connector in [Part 4.2](#42-netlify-official-connector) uses a browser sign-in instead of a token, and that is the better path. Get a token only if you want the paste-a-token route or if a project asks for one.
+
+1. On [app.netlify.com](https://app.netlify.com), click your avatar, then **User settings**.
+2. Click **Applications**, then under **Personal access tokens** click **New access token**. Direct link: [app.netlify.com/user/applications](https://app.netlify.com/user/applications).
+3. Name it, set an **expiration date**, click **Generate token**, copy it once.
+
+One quirk worth knowing: if you ever reset your Netlify password, all existing tokens die with it.
+
+### 3.3 Render API key
+
+1. On [dashboard.render.com](https://dashboard.render.com), open your **Account Settings** and find the **API Keys** section. Direct link: [dashboard.render.com/u/settings](https://dashboard.render.com/u/settings).
+2. Click **Create API Key**, name it, copy it once.
+
+Note: a Render API key has broad access to your whole account, with no way to narrow it. Guard it accordingly, and prefer the browser sign-in route in [Part 4.3](#43-render-custom-connector) when you can.
+
+### 3.4 Canvas access token
+
+A Canvas token lets a program read and write your Canvas courses through the official Canvas API. It carries **your full Canvas permissions**, which for an instructor includes student names, submissions, and grades. That is FERPA-protected data. Three rules before you generate one:
+
+- **Check your institution's policy** on student data in external tools, AI tools included. An institutional Claude for Education account may be covered by a data agreement; a personal account is not. When in doubt, ask, or practice on a sandbox course with no real students. Instructure offers free "Free-for-Teacher" Canvas accounts for exactly this kind of practice.
+- **Set an expiration date** on the token.
+- **Delete the token when the task is done.** Regenerating takes one minute.
+
+Steps:
+
+1. Log into your institution's Canvas in a browser.
+2. In the left global navigation, click **Account** (your profile picture), then **Settings**.
+3. Scroll down to **Approved Integrations** and click **+ New Access Token**.
+4. **Purpose**: name the task, e.g. `claude-announcement-drafts`. Set an **expiration date**.
+5. Click **Generate Token** and copy it once.
+
+If you do not see an Approved Integrations section or the button is missing, your institution has restricted self-service tokens (several universities now require a request process instead). Contact your LMS support team.
+
+You will also need your **Canvas base URL**: the address in your browser when you use Canvas, usually `https://yourschool.instructure.com` or a custom domain like `https://canvas.uw.edu`.
+
+---
+
+## Part 4: Connect Claude to your accounts
+
+There are two ways Claude reaches your accounts, and this guide uses both.
+
+**Connectors** are set up once in Claude's settings. You sign in through your browser (OAuth), no token changes hands, and you can revoke access with one click. Use these when they exist: Netlify and Render both have one.
+
+**Pasting a token in chat** works for everything else. You hand Claude a token in your message, Claude uses its built-in code environment to call the service's API, done. It is cruder but universal, and you control the blast radius by controlling the token. GitHub and Canvas use this route.
+
+One honest caveat about the paste route: the token sits in that conversation's history. Delete the conversation when the work is finished, or rotate the token. Either is fine; doing neither is not.
+
+### 4.1 Where connectors live
+
+- Open [claude.ai/customize/connectors](https://claude.ai/customize/connectors) (also reachable via **Settings > Connectors**).
+- Inside a chat, connectors are toggled per conversation: click the **+** (or sliders) button at the lower left of the message box, then **Connectors**.
+
+The Free plan includes directory connectors plus **one** custom connector, which is exactly enough for this guide.
+
+### 4.2 Netlify (official connector)
+
+1. On the Connectors page, find **Netlify** in the connector directory and click **Connect**.
+2. A browser window opens; sign into Netlify and click **Authorize**.
+3. That is the whole setup. No token.
+
+If Netlify is not listed in your directory, add it as a custom connector with the URL `https://netlify-mcp.netlify.app/mcp`.
+
+Test it in a new chat: *"Using the Netlify connector, list my Netlify sites."* An empty list is the correct answer right now.
+
+### 4.3 Render (custom connector)
+
+Render's connector is added by URL. Per [Render's docs](https://render.com/docs/mcp-server):
+
+1. On the Connectors page, click **Add custom connector**.
+2. **Name**: `render`. **URL**: `https://mcp.render.com/mcp`.
+3. Open **Advanced settings** and set **OAuth Client ID** to `claude`.
+4. Click **Add**, then **Connect**, and approve in the browser window that opens. No API key needed for this route.
+
+First prompt in any chat that uses it: *"Set my Render workspace to [YOUR WORKSPACE NAME]"* (your workspace name is at the top left of the Render dashboard). Then try *"List my Render services."*
+
+Prefer not to use a connector? Paste your API key from [3.3](#33-render-api-key) into the chat instead and Claude will call the Render API directly.
+
+### 4.4 GitHub (paste the token)
+
+No connector needed. In any chat, hand Claude the classic token from [3.1](#31-github-classic-token) along with the task:
+
+> Here is my GitHub token: ghp_XXXXXXXX
+>
+> Create a public repo called `test-drive` under my account, add a README that says hello, and send me the link. Do not put the token in any file.
+
+Claude uses its code environment to run `git` and the GitHub API with your token. The "do not put the token in any file" line is belt-and-suspenders; say it anyway.
+
+### 4.5 Canvas (paste the token)
+
+Same pattern, plus the base URL:
+
+> My Canvas base URL is https://yourschool.instructure.com and here is my Canvas token: XXXX
+>
+> List my active courses with their course IDs. Read-only for now; do not change anything.
+
+Start read-only. Once you trust the setup, you can allow writes (posting an announcement, creating an assignment) one action at a time. And per [3.4](#34-canvas-access-token): sandbox course first, delete the token after.
+
+---
+
+## Part 5: Token hygiene
+
+Six rules. They take less time to follow than a single compromised account takes to clean up.
+
+1. **One token per purpose**, named for the job. Never reuse a token across unrelated projects.
+2. **Always set an expiration.** 90 days on GitHub, explicit dates on Netlify, Render (where offered), and Canvas.
+3. **Tokens never go in files.** Not in code, not in a README, not in a repo. Tell Claude this explicitly when it builds anything. For deployed apps, secrets go in the hosting service's environment variables (Project 3 shows how).
+4. **Delete or rotate after a heavy session.** Especially any session where a token was pasted into chat. Rotation costs two minutes.
+5. **If a token leaks**, revoke it first and investigate second. Every service above has a revoke/delete button next to the token list.
+6. **Canvas tokens outrank the other rules.** They reach student data. Your institution's policy beats anything in this guide.
+
+---
+
+## Part 6: Three projects
+
+Each project below includes a starter prompt. Paste it into a fresh Claude chat, fill in the CAPITALIZED placeholders, and adjust freely: the prompt is a first draft, not a contract. Expect a little back-and-forth; that is the normal working mode, not a failure.
+
+### Project 1: Course website (30 to 60 minutes)
+
+**What you get.** A public course site: description, schedule, office hours, policies. Version-controlled on GitHub, live on Netlify, updated by asking Claude for edits.
+
+**You need.** GitHub token (3.1), Netlify connector (4.2). Enable the Netlify connector in the chat.
+
+**Starter prompt:**
+
+```text
+Here is my GitHub token: PASTE_GITHUB_TOKEN
+
+Create a public GitHub repo called COURSE-NUMBER-website under my account.
+Build a course website for COURSE NUMBER: COURSE TITLE, FALL 2026.
+Pages: home (course description, instructor, office hours: YOUR HOURS),
+a week-by-week schedule (12 weeks, topics: LIST A FEW), and a policies page
+(late work, collaboration, AI use). Clean and readable, works on phones,
+no frameworks needed. Push everything to the repo. Do not put the token
+in any file.
+
+Then deploy the site to Netlify using the Netlify connector and give me
+the live URL.
+```
+
+**Then try.** "Change my office hours to Wednesdays 1-3pm and redeploy." "Add a resources page with these five links." Each edit lands in the repo, so you have the full history.
+
+**Stretch.** Point a custom domain at it, or ask Claude to add your publications page.
+
+### Project 2: Practice-problem app (1 to 2 hours)
+
+**What you get.** An interactive quiz for your subject. Students pick answers, get instant feedback and explanations, see a score. No accounts, no server, no student data collected: it is a static page, which keeps both the engineering and the privacy story simple.
+
+**You need.** Same as Project 1: GitHub token, Netlify connector.
+
+**Starter prompt:**
+
+```text
+Here is my GitHub token: PASTE_GITHUB_TOKEN
+
+Create a public GitHub repo called SUBJECT-practice under my account.
+Build a single-page practice quiz app for TOPIC (e.g. "equilibrium
+problems in first-year chemistry"). Requirements:
+
+- 10 multiple-choice questions with 4 options each. Write the questions
+  at the level of AUDIENCE (e.g. "second-year undergraduates"). I will
+  review and correct them, so make them your best attempt.
+- After each answer: immediately show right/wrong plus a 2-3 sentence
+  explanation.
+- A running score and a final summary screen with a "try again" that
+  reshuffles question order.
+- Works well on phones. Store nothing about the user. No token in any file.
+
+Push to the repo, deploy to Netlify with the Netlify connector, give me
+the URL.
+```
+
+**Then try.** Paste in your own question bank ("replace the questions with these 20"). Ask for LaTeX-rendered math if your subject needs it. Ask for a topic filter if you add more questions.
+
+**Review the questions before sharing.** Claude writes plausible questions; you are the subject-matter check. This is the same review you would give a new TA's problem set, and it goes fast.
+
+### Project 3: Canvas assistant (an afternoon)
+
+**What you get.** A small private web dashboard, hosted on Render, that talks to the Canvas API: it lists your courses, shows assignment submission counts and a grade distribution, and drafts announcement text you can paste into Canvas. Your Canvas token lives in a Render environment variable, never in the code.
+
+**You need.** GitHub token (3.1), Render connector (4.3), Canvas token and base URL (3.4). Read the FERPA notes in 3.4 first; a sandbox course is the right place to start.
+
+**Step 1, explore in chat first** (no app yet, just check the plumbing):
+
+```text
+My Canvas base URL is https://YOURSCHOOL.instructure.com and here is my
+Canvas token: PASTE_CANVAS_TOKEN
+
+Read-only: list my active courses with IDs, and for course COURSE_ID
+list the assignments with due dates and how many submissions each has.
+```
+
+**Step 2, build and deploy:**
+
+```text
+Now build the dashboard. Here is my GitHub token: PASTE_GITHUB_TOKEN
+
+Create a private GitHub repo called canvas-dashboard under my account.
+Build a small Python (Flask) web app that reads two environment
+variables, CANVAS_TOKEN and CANVAS_BASE_URL, and shows: my course list;
+per course, assignments with due dates and submission counts; per
+assignment, a simple grade distribution chart; and a button that drafts
+an announcement summarizing upcoming deadlines (draft only, nothing is
+posted to Canvas). Protect the whole app with a single password read
+from an APP_PASSWORD environment variable.
+
+Never write any token or password into the code or the repo.
+
+Then use the Render connector to create a free web service from the
+repo, set the three environment variables (ask me for the values one at
+a time), deploy, and give me the URL.
+```
+
+**Then try.** "Add a page that flags students with no submissions in the last two weeks." "Draft individual nudge emails I can review." Keep the app in draft-and-review mode: the professor clicks send, not the robot.
+
+**Free-tier reality.** The free Render service sleeps when idle; the first load after a quiet spell takes a moment. Fine for a personal dashboard.
+
+---
+
+## Part 7: Appendix, Claude Code
+
+Everything so far runs in the claude.ai chat. Claude Code is the same Claude working in a terminal on your own computer: it reads and edits files in a folder, runs programs, and uses git directly. Worth adopting when projects outgrow the chat window, when you want the files local, or when a session should pick up exactly where the last one stopped.
+
+Two facts up front. It needs a paid plan (Pro or higher; it is included in the subscription, so there is no per-use metering and no API key to manage). And it lives in a terminal, which sounds scarier than it is: you type English at it, same as the chat.
+
+### Install
+
+macOS or Linux, in Terminal:
+
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+Windows, in PowerShell:
+
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+
+Homebrew users: `brew install --cask claude-code`.
+
+### First session
+
+```bash
+mkdir my-first-project && cd my-first-project
+claude
+```
+
+On first run, choose to log in with your **Claude.ai account** and approve in the browser. Then talk to it: "Build the Project 2 quiz app in this folder." Claude Code asks permission before changing files or running commands; read what it proposes before saying yes, at least until trust is earned.
+
+### Connect Netlify and Render
+
+Claude Code uses the same connectors, added from the command line:
+
+```bash
+claude mcp add --transport http netlify https://netlify-mcp.netlify.app/mcp
+claude mcp add --transport http --client-id claude render https://mcp.render.com/mcp
+```
+
+Then inside a session, type `/mcp` and authenticate each one in the browser. Your GitHub token gets pasted into the session the same way as in chat, or configured once with `git` credentials if you go further down this road.
+
+### Two habits worth stealing
+
+- Run `/init` in a project folder once: Claude Code writes a `CLAUDE.md` file describing the project, which future sessions read automatically. Standing instructions ("never commit tokens", "log changes in CHANGES.md") belong there.
+- Prefer terminal-free? The Claude Code **VS Code extension** gives the same tool a graphical home.
+
+Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
+
+---
+
+## Troubleshooting
+
+**"Bad credentials" or 401 when Claude uses a token.** The token expired, a scope is missing (GitHub needs `repo` and `workflow`), or the paste picked up a stray space. Generate a fresh one; it is faster than debugging.
+
+**Canvas has no "Approved Integrations" section.** Your institution disabled self-service tokens. Ask LMS support; several universities issue tokens through a request form instead.
+
+**Claude ignores a connector.** Enable it for that conversation: **+** button at the lower left of the message box, then **Connectors**, toggle it on. Also confirm it shows as connected on the Connectors settings page.
+
+**"Add custom connector" refuses or is missing.** The Free plan allows one custom connector; remove an old one or upgrade.
+
+**Render app is slow on first load.** Free services sleep when idle. It wakes on its own; wait a moment and reload.
+
+**You hit the usage limit mid-project.** It resets on a rolling 5-hour window. Come back after the reset, or take it as your sign about Pro.
+
+**A token got committed to a repo by accident.** Revoke it immediately (the service's token page has a delete button), then generate a new one. Revoking first makes the leaked copy worthless; cleaning git history is optional afterwards.
+
+## Official documentation
+
+- Claude plans: [claude.com/pricing](https://claude.com/pricing) · Connectors: [support.claude.com](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp)
+- GitHub accounts and tokens: [docs.github.com](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) · [github.com/settings/tokens](https://github.com/settings/tokens)
+- Netlify: [docs.netlify.com](https://docs.netlify.com/api-and-cli-guides/api-guides/get-started-with-api/) and the [Netlify + Claude page](https://www.netlify.com/with/claude/)
+- Render: [render.com/docs/mcp-server](https://render.com/docs/mcp-server) · [render.com/docs/free](https://render.com/docs/free)
+- Canvas API and tokens: [Canvas OAuth docs](https://www.canvas.instructure.com/doc/api/file.oauth.html) · [managing access tokens](https://community.canvaslms.com/t5/Canvas-Basics-Guide/How-do-I-manage-API-access-tokens-in-my-user-account/ta-p/615312)
+- Claude Code: [code.claude.com/docs](https://code.claude.com/docs)
+
+---
+
+Maintained by [Yusuf Pisan](https://github.com/pisanuw). Corrections and questions: open an issue. Written for colleagues who suspect this stuff might be useful but have not had a free afternoon to find out. Now you have a map for the afternoon. :-)
