@@ -2,6 +2,15 @@
 
 ## 2026-08-21
 
+- Added 3.4, creating a Google OAuth client (current Google Auth Platform
+  UI, Internal vs External, non-sensitive scopes only, redirect URIs).
+  Canvas token renumbered to 3.5; cross-references updated.
+- Project 3 reworked: dropped the shared APP_PASSWORD, added Step 3 for
+  Google sign-in with an ALLOWED_EMAILS allowlist, plus a test that
+  actually proves the allowlist works. Noted that free Render services
+  are public and suggested localhost for real student data.
+- Token hygiene now seven rules (OAuth client secret added). Three OAuth
+  troubleshooting entries added.
 - Prose revised throughout for voice (write-like-pisan): cut the AI tells,
   including seven "worth knowing" constructions, stacked "X, not Y" endings,
   and the habit of closing every paragraph on an aphorism. Added hedging,

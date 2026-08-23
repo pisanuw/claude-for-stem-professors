@@ -62,7 +62,7 @@ I suggest starting on Free, doing Project 1, and upgrading the first time the li
 
 If you do go Pro, [my referral link](https://claude.ai/referral/X0jtHxAOEA) throws a small thank-you my way. Feel free to ignore it. The guide is the same either way.
 
-**University note.** Some universities have institutional Claude for Education agreements with different data protections than a personal account. If yours does, use it, especially for anything touching Canvas ([Part 3.4](#34-canvas-access-token) explains why). Ask your IT or teaching-technology office.
+**University note.** Some universities have institutional Claude for Education agreements with different data protections than a personal account. If yours does, use it, especially for anything touching Canvas ([Part 3.5](#35-canvas-access-token) explains why). Ask your IT or teaching-technology office.
 
 ### 1.3 Turn on network egress (do this in a browser)
 
@@ -162,7 +162,28 @@ One quirk: reset your Netlify password and every existing token dies with it.
 
 Note: a Render API key has broad access to your whole account, with no way to narrow it. Guard it accordingly, and prefer the browser sign-in route in [Part 4.3](#43-render-custom-connector) when you can.
 
-### 3.4 Canvas access token
+### 3.4 Google OAuth client (for app logins)
+
+The other credentials here let Claude act as you. This one is different: it lets *other people* prove who they are to an app you built. Project 3 uses it so your Canvas dashboard asks for a Google sign-in instead of sitting behind one shared password.
+
+Google reorganized this console during 2025 and most guides on the web still describe the old menus. What follows is the current layout.
+
+1. Go to [console.cloud.google.com](https://console.cloud.google.com) and sign in. Create a project (top-left project selector, then **New project**). Name it for the app, e.g. `canvas-dashboard`. Switch to it before continuing, which is the step everyone forgets.
+2. In the left menu, open **Google Auth Platform**. On a fresh project it offers a **Get started** wizard. Fill in an app name and your support email.
+3. **Audience** is the one real decision. **Internal** limits sign-in to accounts in your own Google Workspace organization, which is what you want if your university runs on Google and your project sits inside its organization. If Internal is greyed out, your project is not under the org, so pick **External**. External starts in testing mode, where only the test users you list can sign in, and that is fine for a dashboard with one user.
+4. Under **Data access**, add only `openid`, `email`, and `profile`. These are non-sensitive scopes, so Google will not put you through app verification. Ask for anything more and you inherit a review process you do not want.
+5. If you chose External, add yourself under **Test users**.
+6. Open **Clients**, click **Create client**, choose **Web application** as the type. Anything else gives you the wrong OAuth flow.
+7. Under **Authorized redirect URIs**, add both of these, adjusting the hostname:
+   - `http://localhost:5000/auth/callback`
+   - `https://YOUR-APP.onrender.com/auth/callback`
+8. Click **Create**. You get a **Client ID** (ends in `.apps.googleusercontent.com`) and a **Client secret**. Copy both. The console shows only the last four characters of the secret afterwards.
+
+The client ID is not sensitive and ends up in your app anyway. The client secret is a real secret and belongs in an environment variable, same as every other token in this guide.
+
+**Google login alone does not protect anything.** If your app accepts every Google account that signs in, you have built a door that opens for four billion people. Signing in proves identity; it does not grant permission. The app has to check the returned email against a list you control. Project 3 does this with an `ALLOWED_EMAILS` variable, and that list is the actual security boundary.
+
+### 3.5 Canvas access token
 
 A Canvas token lets a program read and write your Canvas courses through the official Canvas API. It carries **your full Canvas permissions**, which for an instructor includes student names, submissions, and grades. That is FERPA-protected data. Three rules before you generate one:
 
@@ -242,20 +263,21 @@ Same pattern, plus the base URL:
 >
 > List my active courses with their course IDs. Read-only for now; do not change anything.
 
-Start read-only. Once you trust the setup, you can allow writes (posting an announcement, creating an assignment) one action at a time. And per [3.4](#34-canvas-access-token): sandbox course first, delete the token after.
+Start read-only. Once you trust the setup, you can allow writes (posting an announcement, creating an assignment) one action at a time. And per [3.5](#35-canvas-access-token): sandbox course first, delete the token after.
 
 ---
 
 ## Part 5: Token hygiene
 
-Six rules. All six together take less time than cleaning up one compromised account.
+Seven rules. All seven together take less time than cleaning up one compromised account.
 
 1. **One token per purpose**, named for the job. Never reuse a token across unrelated projects.
 2. **Always set an expiration.** 90 days on GitHub, explicit dates on Netlify, Render (where offered), and Canvas.
 3. **Tokens never go in files.** Not in code, not in a README, not anywhere in a repo. Tell Claude this explicitly every time it builds something. For deployed apps, secrets belong in the hosting service's environment variables (Project 3 shows how).
 4. **Delete or rotate after a heavy session.** Especially any session where a token was pasted into chat. Rotation costs two minutes.
 5. **If a token leaks**, revoke it first and investigate second. Every service above has a revoke/delete button next to the token list.
-6. **Canvas tokens outrank the other rules.** They reach student data. Your institution's policy beats anything in this guide.
+6. **An OAuth client secret is a token too.** Environment variable, never the repo. If it leaks, rotate it in the Google console under **Clients**.
+7. **Canvas tokens outrank the other rules.** They reach student data. Your institution's policy beats anything in this guide.
 
 ---
 
@@ -378,9 +400,11 @@ Ask me any questions before you start.
 
 ### Project 3: Canvas assistant (an afternoon)
 
-**What you get.** A small private web dashboard, hosted on Render, that talks to the Canvas API: it lists your courses, shows assignment submission counts and a grade distribution, and drafts announcement text you can paste into Canvas. Your Canvas token lives in a Render environment variable, never in the code.
+**What you get.** A web dashboard, hosted on Render, that talks to the Canvas API: it lists your courses, shows assignment submission counts and a grade distribution, and drafts announcement text you can paste into Canvas. Your Canvas token lives in a Render environment variable, never in the code.
 
-**You need.** GitHub token (3.1), Render connector (4.3), Canvas token and base URL (3.4). Read the FERPA notes in 3.4 first; a sandbox course is the right place to start.
+**You need.** GitHub token (3.1), Render connector (4.3), Canvas token and base URL (3.5), Google OAuth client (3.4). Read the FERPA notes in 3.5 first. Start on a sandbox course with no real students.
+
+**Where this app lives.** Free Render services are public web services. There is no private option on the free tier, so the URL is reachable by anyone on the internet who finds it, and `canvas-dashboard.onrender.com` is not hard to guess. Step 3 replaces the shared password with Google sign-in and an email allowlist, which is the difference between a locked door and a sign saying please do not enter. If the app will hold real student data, I suggest running it on your own machine instead and skipping Render entirely.
 
 **Step 1, explore in chat first** (no app yet, just check the plumbing):
 
@@ -403,17 +427,52 @@ variables, CANVAS_TOKEN and CANVAS_BASE_URL, and shows: my course list;
 per course, assignments with due dates and submission counts; per
 assignment, a simple grade distribution chart; and a button that drafts
 an announcement summarizing upcoming deadlines (draft only, nothing is
-posted to Canvas). Protect the whole app with a single password read
-from an APP_PASSWORD environment variable.
+posted to Canvas).
+
+Leave authentication out for now, I will add Google login next. Do not
+add a password login I will have to rip out.
 
 Never write any token or password into the code or the repo.
 
 Then use the Render connector to create a free web service from the
-repo, set the three environment variables (ask me for the values one at
-a time), deploy, and give me the URL.
+repo, set the environment variables (ask me for the values one at a
+time), deploy, and give me the URL.
 
 Ask me any questions before you start.
 ```
+
+**Step 3, put a real lock on it:**
+
+Now the dashboard is live and anyone who finds the URL can read it. Add Google sign-in. You need the client ID and secret from [3.4](#34-google-oauth-client-for-app-logins) and your app's URL from Step 2, which is also the hostname to put in the redirect URI back in the Google console.
+
+```text
+Add Google sign-in to the dashboard.
+
+Use the OAuth authorization code flow with these environment variables:
+GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, ALLOWED_EMAILS (a comma-separated
+list), and FLASK_SECRET_KEY for session signing. Request only the openid,
+email, and profile scopes.
+
+Rules:
+- Every route except the login page and the OAuth callback requires a
+  signed-in session. Do not leave any route open.
+- After Google returns the profile, check the email against ALLOWED_EMAILS.
+  Anyone not on the list gets a plain "not authorized" page and no data,
+  even though Google authenticated them fine.
+- Verify the email_verified claim too.
+- The callback path must be /auth/callback so it matches what I
+  registered with Google.
+- Add a sign-out route that clears the session.
+- Generate a random FLASK_SECRET_KEY for me to paste into Render. It must
+  not be in the code.
+
+Then redeploy to Render, set the new environment variables, and remind me
+which redirect URI to add in the Google console.
+
+Ask me any questions before you start.
+```
+
+Test it in a private browser window. Sign in with your own account and you should reach the dashboard. Sign in with a different Google account and you should be refused. If the second test lets you in, the allowlist is not being checked and the app is still wide open, so stop and tell Claude exactly that.
 
 **Then try.** "Add a page that flags students with no submissions in the last two weeks." "Draft individual nudge emails I can review." Keep the whole thing in draft-and-review mode. The professor clicks send.
 
@@ -479,6 +538,12 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 **Claude built something different from what you meant.** You did not ask it to ask. Add "Ask me any questions before you start" and run it again. One extra exchange, and you skip the rebuild.
 
 **"Bad credentials" or 401 when Claude uses a token.** The token expired, a scope is missing (GitHub needs `repo` and `workflow`), or the paste picked up a stray space. Generate a fresh one; it is faster than debugging.
+
+**Google sign-in fails with `redirect_uri_mismatch`.** The URI registered in the Google console and the one your app sends have to match exactly: scheme, hostname, port, path, no trailing slash. Paste both into the chat and let Claude compare them character by character. This is the single most common OAuth error and it is always a typo.
+
+**Google says the app is unverified.** Expected for an External app in testing mode. Click through the advanced link. It goes away if you switch the project to Internal, and it never applied to you in the first place if you stayed on `openid`, `email`, and `profile`.
+
+**A colleague you added to ALLOWED_EMAILS still cannot get in.** On an External app they also need to be listed under **Test users** in the Google console. Two separate lists, both required.
 
 **Canvas has no "Approved Integrations" section.** Your institution turned off self-service tokens. Ask LMS support. Several universities hand them out through a request form instead.
 
