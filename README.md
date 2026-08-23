@@ -219,6 +219,33 @@ The free tier as of August 2026 is 3,000 emails a month, capped at **100 a day**
 
 **Before you email students from an app you built:** that is a message from you, in your professional capacity, sent by a program you have not tested much. Send to yourself first. Every time.
 
+### 3.7 Supabase project (optional, for storing data)
+
+Skip this unless your app needs to remember something after the browser closes. Project 1 and Project 2 as written do not: the course site is files, and the quiz app holds everything in the page. The moment you want saved progress, submitted responses, or a record that accumulates over a term, you need a database, and Supabase is a Postgres database with a web dashboard and an API in front of it.
+
+1. Go to [supabase.com](https://supabase.com) and sign up. GitHub and Google sign-in both work.
+2. Create an organization (Free plan), then **New project**.
+3. Name it, set a **database password** (save it in your password manager now, it is shown once), and pick the region closest to your students. `West US` for the Pacific Northwest.
+4. Wait a couple of minutes while it provisions.
+5. Open **Settings**, then **API**. You need the **Project URL** and two keys.
+
+The two keys are not interchangeable and mixing them up is the classic Supabase mistake:
+
+- The **anon** key (also called publishable) is designed to sit in front-end code where anyone can read it. That is fine by design, and only by design, as explained below.
+- The **service_role** key (also called secret) bypasses every access rule you write. Server-side only, environment variable only. If it ends up in a page, a repo, or a chat you later share, rotate it immediately.
+
+**Row Level Security is the part that actually protects the data.** A fresh table is open: with RLS off, the anon key lets anyone who views your page read and write every row in it. Supabase warns you about this in the dashboard and people click past it. Tell Claude to enable RLS on every table and write explicit policies, then check it yourself under **Authentication**, then **Policies**. A table with no policy and RLS off is a public spreadsheet with extra steps.
+
+Free tier as of August 2026: 500 MB of database, two active projects, no backups. Two things follow from that.
+
+**Free projects pause after about a week without database activity.** This is the one that ruins a teaching tool. You build a quiz app in October, students use it before the December final, and by then the project has been asleep for six weeks and the app returns errors. Supabase emails a warning first and restoring takes a click and roughly thirty seconds, but you will not be watching, and the students hit it at 11pm the night before. If an app has to be up on a date you care about, resume it a few days ahead and check it yourself, or ask Claude for a scheduled GitHub Action that pings the database every few days.
+
+**No backups on the free plan.** Nothing is snapshotted for you. If the data matters, ask Claude for a script that exports the tables to CSV, and run it now and then.
+
+**On student data:** a Supabase project is one more third party holding whatever you put in it. The privacy questions in 3.5 apply here with more force, because a database persists by definition. Anonymous or aggregate data is a different conversation from named submissions, and named submissions deserve a word with your privacy office first.
+
+Claude can also talk to Supabase through a connector, the same way it does Netlify and Render (see Part 4). Enable it from the connectors menu if you would rather not paste keys into chats.
+
 ---
 
 ## Part 4: Connect Claude to your accounts
@@ -412,6 +439,28 @@ Ask me any questions before you start.
 
 **Then try.** Paste in your own question bank ("replace the questions with these 20"). Upload an old problem set or exam and ask Claude to build the quiz from those problems instead of inventing new ones. Ask for LaTeX-rendered math if your subject needs it. Ask for a topic filter if you add more questions.
 
+**Optional: save results with Supabase.** As built, this app stores nothing, which is why it needs no privacy conversation. Adding a database changes that, so add it deliberately. Anonymous aggregates ("question 7 is missed by 80 percent of attempts") are useful for your teaching and carry almost none of the risk. Named per-student results are a different thing entirely, and I would not collect them without asking your privacy office first.
+
+With a project set up per [3.7](#37-supabase-project-optional-for-storing-data):
+
+```text
+Add anonymous result tracking to the quiz app using Supabase.
+
+Store one row per answered question: question id, whether it was correct,
+and a timestamp. No names, no emails, no student identifiers, no IP
+addresses, and no session id that could link one student's answers
+together across questions.
+
+Enable Row Level Security on the table. The anon key may insert rows and
+may not read them back. Show me the policy you wrote and explain what it
+allows, because I want to check it myself.
+
+Add a separate page for me that shows the percentage correct per question,
+sorted worst first.
+
+Ask me any questions before you start.
+```
+
 **Read the questions before you share the link.** Claude writes plausible questions. You are the one who knows if they are right. Same review you would give a new TA's problem set, and it goes quickly. Fluency is not accuracy.
 
 ### Project 3: Canvas assistant (an afternoon)
@@ -596,6 +645,8 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 **Google says the app is unverified.** Expected for an External app in testing mode. Click through the advanced link. It goes away if you switch the project to Internal, and it never applied to you in the first place if you stayed on `openid`, `email`, and `profile`.
 
 **A colleague you added to ALLOWED_EMAILS still cannot get in.** On an External app they also need to be listed under **Test users** in the Google console. Two separate lists, both required.
+
+**An app that worked in October is broken in December.** Most likely a paused Supabase project (about a week of inactivity does it) or a sleeping Render free service. Open the relevant dashboard and look at the project status before you debug any code.
 
 **Magic-link emails never arrive.** Check the Resend dashboard logs first, which tell you whether the send failed or the mail was delivered and filtered. Mail from `onboarding@resend.dev` lands in spam routinely. Also check whether you hit the 100-a-day free cap, in which case sending is paused rather than broken.
 

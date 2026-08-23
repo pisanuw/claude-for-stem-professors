@@ -15,6 +15,12 @@
 - Project 3 Step 4, optional magic-link login via Resend, with explicit
   token rules (single use, 15-minute expiry, hashed at rest, rate limited,
   no user enumeration) and failure-case tests.
+- Added 3.7, optional Supabase project for storing data: anon vs
+  service_role keys, Row Level Security as the real protection, free tier
+  limits, the 7-day inactivity pause (with the October-build/December-exam
+  failure it causes), and no backups on Free.
+- Project 2 optional extension: anonymous per-question result tracking with
+  an insert-only RLS policy and no linkable session id.
 - Token hygiene now seven rules (OAuth client secret added). Three OAuth
   troubleshooting entries added.
 - Prose revised throughout for voice (write-like-pisan): cut the AI tells,
