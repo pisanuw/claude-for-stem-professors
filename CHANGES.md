@@ -9,6 +9,12 @@
   Google sign-in with an ALLOWED_EMAILS allowlist, plus a test that
   actually proves the allowlist works. Noted that free Render services
   are public and suggested localhost for real student data.
+- Added 3.6, optional Resend API key for sending email: free tier limits
+  (3,000/month, 100/day), onboarding@resend.dev vs verified domain, and a
+  note that uw.edu DNS is not yours to change.
+- Project 3 Step 4, optional magic-link login via Resend, with explicit
+  token rules (single use, 15-minute expiry, hashed at rest, rate limited,
+  no user enumeration) and failure-case tests.
 - Token hygiene now seven rules (OAuth client secret added). Three OAuth
   troubleshooting entries added.
 - Prose revised throughout for voice (write-like-pisan): cut the AI tells,

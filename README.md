@@ -203,6 +203,22 @@ If you do not see an Approved Integrations section or the button is missing, you
 
 You will also need your **Canvas base URL**: the address in your browser when you use Canvas, usually `https://yourschool.instructure.com` or a custom domain like `https://canvas.uw.edu`.
 
+### 3.6 Resend API key (optional, for sending email)
+
+Skip this unless you want an app that sends email. Two reasons you might: your app needs to notify someone (a weekly digest, a nudge to a student, an alert to yourself), or you want magic-link logins for people who cannot use the Google button from 3.4.
+
+Sending email from a program is one of those problems that looks trivial and is not. Mail servers are suspicious of new senders, and a hand-rolled sender lands in spam or nowhere. Resend does the unglamorous part.
+
+1. Go to [resend.com](https://resend.com) and sign up. Google and GitHub sign-in both work.
+2. Open **API Keys** and click **Create API Key**. Name it for the app. Give it **Sending access** only, not full access.
+3. Copy the key (it starts with `re_`). Shown once, same as every other token here.
+
+You can send immediately from `onboarding@resend.dev` without touching DNS, which is enough to get an app working. Mail from that address is for testing: it looks like what it is, and recipients' spam filters agree. To send from your own address, add a domain under **Domains** and paste the SPF and DKIM records Resend gives you into your DNS. If your address is `@uw.edu`, you do not control that DNS and central IT will not add records for your side project, so use a domain you own or stay on the test address.
+
+The free tier as of August 2026 is 3,000 emails a month, capped at **100 a day**, on one domain. The daily cap is the one that bites: it is plenty for a dashboard emailing you, and not plenty for a mailing to 150 students. When you hit the cap on the free plan, sending pauses until the window rolls over. Nothing bounces, nothing bills you, the mail just does not go.
+
+**Before you email students from an app you built:** that is a message from you, in your professional capacity, sent by a program you have not tested much. Send to yourself first. Every time.
+
 ---
 
 ## Part 4: Connect Claude to your accounts
@@ -402,7 +418,7 @@ Ask me any questions before you start.
 
 **What you get.** A web dashboard, hosted on Render, that talks to the Canvas API: it lists your courses, shows assignment submission counts and a grade distribution, and drafts announcement text you can paste into Canvas. Your Canvas token lives in a Render environment variable, never in the code.
 
-**You need.** GitHub token (3.1), Render connector (4.3), Canvas token and base URL (3.5), Google OAuth client (3.4). Read the FERPA notes in 3.5 first. Start on a sandbox course with no real students.
+**You need.** GitHub token (3.1), Render connector (4.3), Canvas token and base URL (3.5), Google OAuth client (3.4). Optionally a Resend key (3.6) if you add magic links in Step 4. Read the FERPA notes in 3.5 first. Start on a sandbox course with no real students.
 
 **Where this app lives.** Free Render services are public web services. There is no private option on the free tier, so the URL is reachable by anyone on the internet who finds it, and `canvas-dashboard.onrender.com` is not hard to guess. Step 3 replaces the shared password with Google sign-in and an email allowlist, which is the difference between a locked door and a sign saying please do not enter. If the app will hold real student data, I suggest running it on your own machine instead and skipping Render entirely.
 
@@ -474,6 +490,42 @@ Ask me any questions before you start.
 
 Test it in a private browser window. Sign in with your own account and you should reach the dashboard. Sign in with a different Google account and you should be refused. If the second test lets you in, the allowlist is not being checked and the app is still wide open, so stop and tell Claude exactly that.
 
+**Step 4, optional: magic links instead of Google.**
+
+Skip this if Google login works for everyone who needs in. It exists for the case where it does not: a co-instructor at another institution, a TA whose account is on a different provider, anyone the Google button turns away. A magic link is a one-time sign-in URL emailed to an address you have already approved. No password, no Google account.
+
+You need a Resend API key from [3.6](#36-resend-api-key-optional-for-sending-email). Add magic links alongside Google sign-in, not instead of it.
+
+```text
+Add magic-link login as a second option next to the existing Google
+sign-in. Use Resend for delivery, with RESEND_API_KEY and MAIL_FROM as
+environment variables.
+
+Flow: the user enters an email, and if it is on ALLOWED_EMAILS they get
+a sign-in link. If it is not on the list, show the exact same "check
+your inbox" message and send nothing, so the page cannot be used to
+find out who has an account.
+
+Token rules, please follow these exactly:
+- Generate with secrets.token_urlsafe(32). Never a counter, a
+  timestamp, or anything derived from the email.
+- Store only a SHA-256 hash of the token, never the token itself.
+- Expire after 15 minutes.
+- Single use: delete it the moment it is redeemed, and issue a fresh
+  session cookie at that point.
+- Rate limit to 3 requests per email address per 15 minutes.
+
+Explain in your reply where the tokens are stored and what happens to
+them on restart, because I want to know if a free-tier restart logs
+everyone out.
+
+Ask me any questions before you start.
+```
+
+Test the failure cases, not the happy path. Use a link twice (the second should be refused), request one for an address that is not on the allowlist (nothing should arrive, and the page should not say so), and let one sit for twenty minutes before clicking.
+
+Worth saying plainly: a magic link in an inbox is a key to your dashboard. Anyone reading that inbox can use it. That is the tradeoff you accept for skipping passwords, and it is why the 15-minute expiry matters.
+
 **Then try.** "Add a page that flags students with no submissions in the last two weeks." "Draft individual nudge emails I can review." Keep the whole thing in draft-and-review mode. The professor clicks send.
 
 **Free-tier reality.** The free Render service sleeps when idle; the first load after a quiet spell takes a moment. Fine for a personal dashboard.
@@ -544,6 +596,8 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 **Google says the app is unverified.** Expected for an External app in testing mode. Click through the advanced link. It goes away if you switch the project to Internal, and it never applied to you in the first place if you stayed on `openid`, `email`, and `profile`.
 
 **A colleague you added to ALLOWED_EMAILS still cannot get in.** On an External app they also need to be listed under **Test users** in the Google console. Two separate lists, both required.
+
+**Magic-link emails never arrive.** Check the Resend dashboard logs first, which tell you whether the send failed or the mail was delivered and filtered. Mail from `onboarding@resend.dev` lands in spam routinely. Also check whether you hit the 100-a-day free cap, in which case sending is paused rather than broken.
 
 **Canvas has no "Approved Integrations" section.** Your institution turned off self-service tokens. Ask LMS support. Several universities hand them out through a request form instead.
 
