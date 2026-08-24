@@ -30,6 +30,11 @@
   inactivity disable. Claude Code appendix renumbered to Part 8.
 - Token hygiene now seven rules (OAuth client secret added). Three OAuth
   troubleshooting entries added.
+- Second voice pass on author feedback: reworked the opening, trimmed the
+  version and PDF lines, cut the university-account and job-change
+  paragraphs, simplified the Google-login and Resend explanations, added a
+  NetID+uw username example, and removed several lines flagged as reading
+  like AI prose.
 - Prose revised throughout for voice (write-like-pisan): cut the AI tells,
   including seven "worth knowing" constructions, stacked "X, not Y" endings,
   and the habit of closing every paragraph on an aphorism. Added hedging,

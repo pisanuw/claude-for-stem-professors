@@ -2,13 +2,13 @@
 
 From zero to a deployed course app: the accounts, the tokens, and three projects you can put in front of students.
 
-So, a colleague types a sentence, an app appears, and everyone claps. I have given that demo. What the demo skips is the hour of account setup that nobody enjoys and everybody survives, which is most of what this guide is. You pay that hour once.
+You have probably seen the demo where someone types a sentence and an app appears. The demo skips the account setup. That is most of this guide, and it takes about an hour. You only do it once.
 
 You do not need a programming background. If you can follow a recipe and copy-paste, you can do all of this.
 
-**Version: 21 Aug 2026.** I checked every click-path against the vendor docs in August 2026. Buttons wander. If something is not where I say it is, have a look at the linked docs and trust those instead. Later versions carry a later date up here so you can tell which copy you are holding.
+**Version: 21 Aug 2026.** I checked every click-path against the vendor docs in August 2026. Buttons move. If something is not where I say it is, check the linked docs.
 
-**Prefer paper?** The PDF of this version is in the repo: [claude-for-stem-professors-2026-08-21.pdf](claude-for-stem-professors-2026-08-21.pdf). Links print with their URLs spelled out so it still works away from a screen. Run `./build-pdf.sh` after edits to rebuild it.
+Run `./build-pdf.sh` if you want a PDF version.
 
 **The three destination projects** (details in [Part 6](#part-6-three-projects)):
 
@@ -20,7 +20,7 @@ You do not need a programming background. If you can follow a recipe and copy-pa
 
 - A computer with a web browser. Parts 1 through 6 need nothing else.
 - About an hour for setup, then an afternoon per project.
-- Money: every service here has a free tier that is enough for these projects. Claude Pro ($20/month) is the one upgrade to consider if you will use this weekly.
+- Money: every service here has a free tier that is enough for these projects.
 - Coffee. I do this with a cortado at 6am, but you do you.
 
 ## Contents
@@ -59,11 +59,9 @@ Free is a real working tier. The difference is mostly capacity.
 | Claude Code (Part 7) | No | Yes |
 | Advanced Research | No | Yes |
 
-I suggest starting on Free, doing Project 1, and upgrading the first time the limit stops you mid-thought. For some people that is week one. For some it never happens. This table also goes stale faster than anything else in the guide, so [claude.com/pricing](https://claude.com/pricing) wins any argument with it.
+I suggest starting on Free and upgrading the first time the limit stops you mid-thought. Pricing changes often, so check [claude.com/pricing](https://claude.com/pricing).
 
 If you do go Pro, [my referral link](https://claude.ai/referral/X0jtHxAOEA) throws a small thank-you my way. Feel free to ignore it. The guide is the same either way.
-
-**University note.** Some universities have institutional Claude for Education agreements with different data protections than a personal account. If yours does, use it, especially for anything touching Canvas ([Part 3.5](#35-canvas-access-token) explains why). Ask your IT or teaching-technology office.
 
 ### 1.3 Turn on network egress (do this in a browser)
 
@@ -89,8 +87,6 @@ Three accounts, all free, all reachable with the **Continue with Google** button
 
 **Which Google account?** Your UW account works fine for all three services, and it is the simpler answer: one login you already use daily, and your .edu address qualifies you for GitHub's free education benefits. Use it.
 
-Faculty do not change institutions often, so the "what if I leave" worry is smaller than it looks. If it does happen, GitHub lets you add a second email and switch your primary address without losing a single repo. Five minutes, on a day when you will have bigger things to sort out.
-
 Two exceptions. Use a personal account if the work is personal (consulting, a book, anything you would rather not explain to a chair), or if your campus IT blocks third-party sign-ins, which some units do.
 
 ### 2.1 GitHub
@@ -99,7 +95,7 @@ GitHub stores your code and its full history. Every project in this guide lives 
 
 1. Go to [github.com/signup](https://github.com/signup).
 2. Click **Continue with Google** and choose your account. (Google login for GitHub has existed since mid-2025; if you last looked before that, it is new.)
-3. Pick a username. It is public and hard to change, so choose something you would put on a syllabus.
+3. Pick a username. It is public and hard to change, so choose something you would put on a syllabus, such as your NetID plus `uw`.
 4. Complete the email or device verification code GitHub sends you.
 
 Two things to do now, while you are in there. Both live in [github.com/settings/security](https://github.com/settings/security):
@@ -165,9 +161,7 @@ Note: a Render API key has broad access to your whole account, with no way to na
 
 ### 3.4 Google OAuth client (for app logins)
 
-The other credentials here let Claude act as you. This one is different: it lets *other people* prove who they are to an app you built. Project 3 uses it so your Canvas dashboard asks for a Google sign-in instead of sitting behind one shared password.
-
-Google reorganized this console during 2025 and most guides on the web still describe the old menus. What follows is the current layout.
+The other credentials here let Claude act as you. This one is different: it lets *other people* prove who they are to an app you built. Project 3 uses it so your Canvas dashboard asks for a Google sign-in.
 
 1. Go to [console.cloud.google.com](https://console.cloud.google.com) and sign in. Create a project (top-left project selector, then **New project**). Name it for the app, e.g. `canvas-dashboard`. Switch to it before continuing, which is the step everyone forgets.
 2. In the left menu, open **Google Auth Platform**. On a fresh project it offers a **Get started** wizard. Fill in an app name and your support email.
@@ -182,7 +176,7 @@ Google reorganized this console during 2025 and most guides on the web still des
 
 The client ID is not sensitive and ends up in your app anyway. The client secret is a real secret and belongs in an environment variable, same as every other token in this guide.
 
-**Google login alone does not protect anything.** If your app accepts every Google account that signs in, you have built a door that opens for four billion people. Signing in proves identity; it does not grant permission. The app has to check the returned email against a list you control. Project 3 does this with an `ALLOWED_EMAILS` variable, and that list is the actual security boundary.
+Google login proves who the user is. It does not decide who gets in. Project 3 uses an `ALLOWED_EMAILS` list for that.
 
 ### 3.5 Canvas access token
 
@@ -214,9 +208,9 @@ Sending email from a program is one of those problems that looks trivial and is 
 2. Open **API Keys** and click **Create API Key**. Name it for the app. Give it **Sending access** only, not full access.
 3. Copy the key (it starts with `re_`). Shown once, same as every other token here.
 
-You can send immediately from `onboarding@resend.dev` without touching DNS, which is enough to get an app working. Mail from that address is for testing: it looks like what it is, and recipients' spam filters agree. To send from your own address, add a domain under **Domains** and paste the SPF and DKIM records Resend gives you into your DNS. If your address is `@uw.edu`, you do not control that DNS and central IT will not add records for your side project, so use a domain you own or stay on the test address.
+You can send from `onboarding@resend.dev` straight away with no DNS setup. It works, and it looks like a test address to both readers and spam filters. To send from your own address, add a domain under **Domains** and paste in the SPF and DKIM records. Note that `@uw.edu` is not yours to configure, so that means a domain you own.
 
-The free tier as of August 2026 is 3,000 emails a month, capped at **100 a day**, on one domain. The daily cap is the one that bites: it is plenty for a dashboard emailing you, and not plenty for a mailing to 150 students. When you hit the cap on the free plan, sending pauses until the window rolls over. Nothing bounces, nothing bills you, the mail just does not go.
+Free tier: 3,000 emails a month, capped at **100 a day**. The daily cap is the one that bites. Hit it and sending pauses until the window rolls over.
 
 **Before you email students from an app you built:** that is a message from you, in your professional capacity, sent by a program you have not tested much. Send to yourself first. Every time.
 
@@ -440,7 +434,7 @@ Ask me any questions before you start.
 
 **Then try.** Paste in your own question bank ("replace the questions with these 20"). Upload an old problem set or exam and ask Claude to build the quiz from those problems instead of inventing new ones. Ask for LaTeX-rendered math if your subject needs it. Ask for a topic filter if you add more questions.
 
-**Optional: save results with Supabase.** As built, this app stores nothing, which is why it needs no privacy conversation. Adding a database changes that, so add it deliberately. Anonymous aggregates ("question 7 is missed by 80 percent of attempts") are useful for your teaching and carry almost none of the risk. Named per-student results are a different thing entirely, and I would not collect them without asking your privacy office first.
+**Optional: save results with Supabase.** As built, this app stores nothing, which is why it needs no privacy conversation. Adding a database changes that, so add it deliberately. Anonymous aggregates ("question 7 is missed by 80 percent of attempts") are useful for your teaching and carry almost none of the risk. Named per-student results are a different thing entirely.
 
 With a project set up per [3.7](#37-supabase-project-optional-for-storing-data):
 
@@ -462,7 +456,7 @@ sorted worst first.
 Ask me any questions before you start.
 ```
 
-**Read the questions before you share the link.** Claude writes plausible questions. You are the one who knows if they are right. Same review you would give a new TA's problem set, and it goes quickly. Fluency is not accuracy.
+**Read the questions before you share the link.** Claude writes plausible questions, but you still need to check.
 
 ### Project 3: Canvas assistant (an afternoon)
 
@@ -470,9 +464,7 @@ Ask me any questions before you start.
 
 **You need.** GitHub token (3.1), Render connector (4.3), Canvas token and base URL (3.5), Google OAuth client (3.4). Optionally a Resend key (3.6) if you add magic links in Step 4. Read the FERPA notes in 3.5 first. Start on a sandbox course with no real students.
 
-**Where this app lives.** Free Render services are public web services. There is no private option on the free tier, so the URL is reachable by anyone on the internet who finds it, and `canvas-dashboard.onrender.com` is not hard to guess. Step 3 replaces the shared password with Google sign-in and an email allowlist, which is the difference between a locked door and a sign saying please do not enter.
-
-If the app will hold real student data, the safer answer is not to deploy it at all. Ask Claude to run it on your own machine instead, reachable only at `localhost`. You give up being able to open it from your phone, and you gain a service that no stranger can reach because it is not on the internet. For a dashboard only you look at, that trade is usually the right one.
+**Where this app lives.** Free Render services are public web services. There is no private option on the free tier, so the URL is reachable by anyone on the internet who finds it, and `canvas-dashboard.onrender.com` is not hard to guess. Step 3 adds Google sign-in and an email allowlist.
 
 **Step 1, explore in chat first** (no app yet, just check the plumbing):
 
