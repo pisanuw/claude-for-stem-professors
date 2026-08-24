@@ -21,6 +21,15 @@
   failure it causes), and no backups on Free.
 - Project 2 optional extension: anonymous per-question result tracking with
   an insert-only RLS policy and no linkable session id.
+- Added 3.8, optional Cloudflare Tunnel: app listens on localhost only,
+  Cloudflare Access authenticates before traffic reaches the code. States
+  plainly that the authenticated route needs a domain (~$10/yr) and that
+  free quick tunnels are unauthenticated and ephemeral.
+- Project 3 now names the tunnel route as the better option for real
+  student data, and notes it replaces Steps 3 and 4.
+- New Part 7 on GitHub Actions scheduled jobs (Supabase keep-alive, weekly
+  digest, CSV backups), including repository secrets and the 60-day
+  inactivity disable. Claude Code appendix renumbered to Part 8.
 - Token hygiene now seven rules (OAuth client secret added). Three OAuth
   troubleshooting entries added.
 - Prose revised throughout for voice (write-like-pisan): cut the AI tells,

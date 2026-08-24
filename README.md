@@ -20,7 +20,7 @@ You do not need a programming background. If you can follow a recipe and copy-pa
 
 - A computer with a web browser. Parts 1 through 6 need nothing else.
 - About an hour for setup, then an afternoon per project.
-- Money: every service here has a free tier that is enough for these projects. Claude Pro ($20/month) is the one upgrade worth considering if you will use this weekly.
+- Money: every service here has a free tier that is enough for these projects. Claude Pro ($20/month) is the one upgrade to consider if you will use this weekly. The single exception is the optional Cloudflare route in 3.8, which needs a domain name, and those run about $10 a year.
 - Coffee. I do this with a cortado at 6am, but you do you.
 
 ## Contents
@@ -31,7 +31,8 @@ You do not need a programming background. If you can follow a recipe and copy-pa
 - [Part 4: Connect Claude to your accounts](#part-4-connect-claude-to-your-accounts)
 - [Part 5: Token hygiene](#part-5-token-hygiene)
 - [Part 6: Three projects](#part-6-three-projects)
-- [Part 7: Appendix, Claude Code](#part-7-appendix-claude-code)
+- [Part 7: Scheduled jobs with GitHub Actions](#part-7-scheduled-jobs-with-github-actions)
+- [Part 8: Appendix, Claude Code](#part-8-appendix-claude-code)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -245,6 +246,27 @@ Free tier as of August 2026: 500 MB of database, two active projects, no backups
 **On student data:** a Supabase project is one more third party holding whatever you put in it. The privacy questions in 3.5 apply here with more force, because a database persists by definition. Anonymous or aggregate data is a different conversation from named submissions, and named submissions deserve a word with your privacy office first.
 
 Claude can also talk to Supabase through a connector, the same way it does Netlify and Render (see Part 4). Enable it from the connectors menu if you would rather not paste keys into chats.
+
+### 3.8 Cloudflare Tunnel (optional, to keep an app off the public internet)
+
+This one solves a problem the rest of the guide cannot. Free hosting on Render means a public web service: the app listens on the open internet and your only defence is whatever login you built. A tunnel inverts that. Your app listens on `localhost` and nothing else, `cloudflared` makes an outbound connection to Cloudflare, and traffic comes back down that connection. There is no port open anywhere and no public address pointing at your machine. Put Cloudflare Access in front and strangers are turned away by Cloudflare before a single request reaches your code.
+
+**The honest catch:** the authenticated version needs a domain name attached to your Cloudflare account, and a domain is not free. Cloudflare Registrar sells at cost, so roughly $10 a year for a `.com`. Free tunnels exist (`cloudflared tunnel --url localhost:5000` gives you a random `trycloudflare.com` address with no account at all), but they are unauthenticated and the address dies when you stop the command. Fine for showing a colleague something for ten minutes. Not a way to protect student data. If you already own a domain, or ten dollars a year buys you the ability to stop worrying, read on. Otherwise skip this section and stay with Google sign-in from 3.4.
+
+1. Create a free account at [cloudflare.com](https://cloudflare.com).
+2. Add your domain and change its nameservers at your registrar to the two Cloudflare gives you. Propagation takes anywhere from minutes to a day.
+3. Go to the Cloudflare One dashboard at [one.dash.cloudflare.com](https://one.dash.cloudflare.com). Open **Networks**, then **Tunnels**, then **Create a tunnel**. Choose **Cloudflared** as the connector.
+4. Name it, save, and copy the install command shown for your operating system. Paste it into a terminal. It installs `cloudflared` and registers it as a background service with your tunnel token baked in.
+5. On the **Published applications** tab, add a hostname: pick a subdomain (`dashboard`), select your domain, set **Type** to HTTP and **URL** to `localhost:5000`. Save.
+
+At this point the app is reachable at your hostname and still open to anyone. One more step closes it:
+
+6. In Cloudflare One, open **Access**, then **Applications**, then **Add an application**, and choose **Self-hosted**. Point it at the hostname from step 5.
+7. Add a policy: action **Allow**, rule type **Emails**, and list the addresses that may get in. Cloudflare's one-time PIN sends a code to that address, so people need no Google account and no password. Save.
+
+Now Cloudflare authenticates every visitor before your app sees the request. **This replaces Steps 3 and 4 of Project 3 entirely.** If you go the tunnel route, you do not need the Google OAuth client, the allowlist code, or the magic links, because none of that traffic reaches your app unauthenticated. Fewer moving parts you wrote yourself is fewer things you got wrong.
+
+The tradeoff: the app runs on your machine, so it is up when your machine is. For a dashboard only you use, that is usually the right answer anyway.
 
 ---
 
@@ -469,7 +491,9 @@ Ask me any questions before you start.
 
 **You need.** GitHub token (3.1), Render connector (4.3), Canvas token and base URL (3.5), Google OAuth client (3.4). Optionally a Resend key (3.6) if you add magic links in Step 4. Read the FERPA notes in 3.5 first. Start on a sandbox course with no real students.
 
-**Where this app lives.** Free Render services are public web services. There is no private option on the free tier, so the URL is reachable by anyone on the internet who finds it, and `canvas-dashboard.onrender.com` is not hard to guess. Step 3 replaces the shared password with Google sign-in and an email allowlist, which is the difference between a locked door and a sign saying please do not enter. If the app will hold real student data, I suggest running it on your own machine instead and skipping Render entirely.
+**Where this app lives.** Free Render services are public web services. There is no private option on the free tier, so the URL is reachable by anyone on the internet who finds it, and `canvas-dashboard.onrender.com` is not hard to guess. Step 3 replaces the shared password with Google sign-in and an email allowlist, which is the difference between a locked door and a sign saying please do not enter.
+
+**There is a better route if you own a domain.** Run the app on your own machine and expose it through a Cloudflare Tunnel with Access in front ([3.8](#38-cloudflare-tunnel-optional-to-keep-an-app-off-the-public-internet)). Nothing listens on the public internet, Cloudflare turns away anyone not on your list before the request reaches your code, and you can skip Steps 3 and 4 below. Costs about $10 a year for the domain. For an app holding real student data, this is what I would do.
 
 **Step 1, explore in chat first** (no app yet, just check the plumbing):
 
@@ -581,7 +605,38 @@ Worth saying plainly: a magic link in an inbox is a key to your dashboard. Anyon
 
 ---
 
-## Part 7: Appendix, Claude Code
+## Part 7: Scheduled jobs with GitHub Actions
+
+You already have this one. It needs no new account, no token, and no server, and it closes several gaps the projects leave open.
+
+GitHub Actions runs a script on a schedule in GitHub's infrastructure. Public repositories get unlimited minutes; private ones get a monthly allowance on the Free plan that a few small cron jobs will not come close to using. Three things it is good for here:
+
+- **Keeping a Supabase project awake.** A query every few days resets the inactivity clock from 3.7, so the quiz app still works in December.
+- **A weekly digest.** Pull from Canvas, email yourself a summary through Resend (3.6). No always-on server, because the job runs for thirty seconds and stops.
+- **Backups.** Export your Supabase tables to CSV on a schedule and commit them, which is the backup the free tier does not give you.
+
+Secrets go in the repository, never in the workflow file: **Settings**, then **Secrets and variables**, then **Actions**, then **New repository secret**. The workflow reads them by name, and anyone reading your code sees the name and not the value.
+
+```text
+Add a GitHub Actions workflow to this repo that runs every three days and
+makes one small query against my Supabase project, so it does not get
+paused for inactivity.
+
+Read the credentials from repository secrets named SUPABASE_URL and
+SUPABASE_ANON_KEY. Nothing sensitive in the workflow file. Add a
+workflow_dispatch trigger too so I can run it by hand to test.
+
+Tell me exactly which secrets to add and where, and what a successful run
+looks like in the Actions tab.
+
+Ask me any questions before you start.
+```
+
+Two things about scheduled workflows that catch people out. The times are approximate and can run late when GitHub is busy, so never schedule anything to the minute. And **GitHub disables scheduled workflows in a repository with no activity for 60 days**, emailing you first. On a repo you are actively working in this never comes up. On a keep-alive repo you deliberately ignore, it is exactly the situation, and the job stops silently right when you have stopped thinking about it. Check the Actions tab at the start of each term.
+
+---
+
+## Part 8: Appendix, Claude Code
 
 Everything so far runs in the claude.ai chat. Claude Code is the same Claude working in a terminal on your own computer: it reads and edits files in a folder, runs programs, and uses git directly. Worth adopting when projects outgrow the chat window, when you want the files local, or when a session should pick up exactly where the last one stopped.
 
@@ -645,6 +700,10 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 **Google says the app is unverified.** Expected for an External app in testing mode. Click through the advanced link. It goes away if you switch the project to Internal, and it never applied to you in the first place if you stayed on `openid`, `email`, and `profile`.
 
 **A colleague you added to ALLOWED_EMAILS still cannot get in.** On an External app they also need to be listed under **Test users** in the Google console. Two separate lists, both required.
+
+**A scheduled workflow stopped running.** Look for a 60-day inactivity disable (there is a banner in the Actions tab and a button to re-enable). Otherwise check that the cron syntax is what you meant, since a wrong field silently means a schedule you did not intend.
+
+**Cloudflare Access lets in someone who should not get in, or blocks you.** Policies apply in order and the first match wins, so an earlier broad rule can override a later specific one. Check the order in the Access application before rewriting anything.
 
 **An app that worked in October is broken in December.** Most likely a paused Supabase project (about a week of inactivity does it) or a sleeping Render free service. Open the relevant dashboard and look at the project status before you debug any code.
 
