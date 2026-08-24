@@ -2,11 +2,9 @@
 
 From zero to a deployed course app: the accounts, the tokens, and three projects you can put in front of students.
 
-You have probably seen the demo where someone types a sentence and an app appears. The demo skips the account setup. That is most of this guide, and it takes about an hour. You only do it once.
+You've probably seen the demo where someone types a sentence and an app appears. The demo skips the account setup. That setup is most of this guide: about an hour, done once. If you can follow a recipe and copy-paste, you can do all of this.
 
-You do not need a programming background. If you can follow a recipe and copy-paste, you can do all of this.
-
-**Version: 21 Aug 2026.** I checked every click-path against the vendor docs in August 2026. Buttons move. If something is not where I say it is, check the linked docs.
+**Version: 21 Aug 2026**, the day I checked every click-path against the vendor docs. Buttons move. If something isn't where I say it is, check the linked docs.
 
 Run `./build-pdf.sh` if you want a PDF version.
 
@@ -18,9 +16,9 @@ Run `./build-pdf.sh` if you want a PDF version.
 
 ## What you need
 
-- A computer with a web browser. Parts 1 through 6 need nothing else.
+- A computer with a web browser. Only the Part 8 appendix needs more (a terminal).
 - About an hour for setup, then an afternoon per project.
-- Money: every service here has a free tier that is enough for these projects.
+- No money. Every service here has a free tier that covers these projects.
 - Coffee. I do this with a cortado at 6am, but you do you.
 
 ## Contents
@@ -43,7 +41,7 @@ Run `./build-pdf.sh` if you want a PDF version.
 
 1. Go to [claude.ai](https://claude.ai).
 2. Click **Continue with Google** and pick your Google account.
-3. Done. You are on the Free plan.
+3. Done. You're on the Free plan.
 
 ### 1.2 Free vs Pro
 
@@ -56,28 +54,18 @@ Free is a real working tier. The difference is mostly capacity.
 | Projects, Artifacts, file creation | Yes | Yes |
 | Connectors (Part 4) | Directory connectors, plus **one** custom connector | Directory plus custom connectors |
 | Model choice | Current default model | Full model picker, including the strongest models |
-| Claude Code (Part 7) | No | Yes |
+| Claude Code (Part 8) | No | Yes |
 | Advanced Research | No | Yes |
 
-I suggest starting on Free and upgrading the first time the limit stops you mid-thought. Pricing changes often, so check [claude.com/pricing](https://claude.com/pricing).
-
-If you do go Pro, [my referral link](https://claude.ai/referral/X0jtHxAOEA) throws a small thank-you my way. Feel free to ignore it. The guide is the same either way.
+Start on Free and upgrade the first time the limit stops you mid-thought. Pricing changes often, so check [claude.com/pricing](https://claude.com/pricing). If you do go Pro, [my referral link](https://claude.ai/referral/X0jtHxAOEA) throws a small thank-you my way. Feel free to ignore it.
 
 ### 1.3 Turn on network egress (do this in a browser)
 
-One setting is easy to miss and makes a real difference. In Claude's settings you will find this:
+One setting is easy to miss. **Allow network egress** lets Claude's code environment reach the internet to install libraries: a plotting package, a PDF parser, whatever the job needs. Without it, most data work fails. Turn it on.
 
-> **Allow network egress**
->
-> Give Claude network access to install packages and libraries in order to perform advanced data analysis, custom visualizations, and specialized file processing. Monitor chats closely as this comes with security risks.
+**Where:** [claude.ai](https://claude.ai) in a web browser, then **Settings**, then **Capabilities**, then scroll to the **very bottom** of the page. The phone app doesn't show this setting at all; set it once in a browser and it applies to your whole account, phone included.
 
-Without it, Claude's code environment is sealed off and cannot install the libraries that most data work needs. Turn it on and it can pull down a plotting library, a PDF parser, a statistics package, whatever the job needs. For the projects here, turn it on.
-
-**Where:** [claude.ai](https://claude.ai) in a web browser, then **Settings**, then **Capabilities**, then scroll to the **very bottom** of the page. It is the last item.
-
-**The catch:** the phone app does not show this setting at all. You have to do it once in a browser on a laptop or desktop. It then applies to your whole account, so your phone gets it too.
-
-That warning at the end is not boilerplate. Network access means the code Claude runs for you can reach the internet, and two things follow. It installs software written by strangers, which is the same bet you make every time you install anything. And a token you pasted into that chat could in principle be sent somewhere. This is why Part 5 nags about rotating tokens. Have a look at what Claude proposes before you approve it, the way you would skim a script a student emailed you.
+The security warning next to the setting isn't boilerplate: code that reaches the internet installs software written by strangers, and a token pasted into that chat could in principle be sent somewhere. That's why Part 5 nags about rotating tokens. Have a look at what Claude proposes before approving, the way you'd skim a script a student emailed you.
 
 ---
 
@@ -85,203 +73,167 @@ That warning at the end is not boilerplate. Network access means the code Claude
 
 Three accounts, all free, all reachable with the **Continue with Google** button. Ten minutes total.
 
-**Which Google account?** Your UW account works fine for all three services, and it is the simpler answer: one login you already use daily, and your .edu address qualifies you for GitHub's free education benefits. Use it.
-
-Two exceptions. Use a personal account if the work is personal (consulting, a book, anything you would rather not explain to a chair), or if your campus IT blocks third-party sign-ins, which some units do.
+**Which Google account?** Your UW account: one login you already use daily, and the .edu address qualifies you for GitHub's education benefits. Use a personal account only if the work is personal (consulting, a book, anything you'd rather not explain to a chair) or if campus IT blocks third-party sign-ins.
 
 ### 2.1 GitHub
 
 GitHub stores your code and its full history. Every project in this guide lives in a GitHub repository.
 
 1. Go to [github.com/signup](https://github.com/signup).
-2. Click **Continue with Google** and choose your account. (Google login for GitHub has existed since mid-2025; if you last looked before that, it is new.)
-3. Pick a username. It is public and hard to change, so choose something you would put on a syllabus, such as your NetID plus `uw`.
-4. Complete the email or device verification code GitHub sends you.
+2. Click **Continue with Google**.
+3. Pick a username. It's public and hard to change, so choose something you'd put on a syllabus, such as your NetID plus `uw`.
+4. Complete the verification code GitHub sends you.
 
-Two things to do now, while you are in there. Both live in [github.com/settings/security](https://github.com/settings/security):
-
-- **Set a password or passkey.** Accounts created through Google have no password, which means no way in if your Google account is ever locked.
-- **Turn on two-factor authentication.** GitHub will nag you about this anyway.
+While you're in there, two things at [github.com/settings/security](https://github.com/settings/security): **set a password or passkey** (accounts created through Google have none, so no way in if Google ever locks you out) and **turn on two-factor authentication**.
 
 ### 2.2 Netlify
 
-Netlify hosts websites and frontend apps: your course site, your quiz app. The free tier is generous and fine for a class.
+Netlify hosts websites and frontend apps: your course site, your quiz app. The free tier is fine for a class.
 
 1. Go to [app.netlify.com/signup](https://app.netlify.com/signup).
-2. Click **Sign up with Google**. (GitHub, GitLab, Bitbucket, and email also work. Signing up with GitHub saves one password and makes repo linking slightly smoother later, but Google is fine.)
+2. Click **Sign up with Google**.
 3. Answer or skip the onboarding questions. You land on an empty dashboard. Good.
 
 ### 2.3 Render
 
-Render hosts backends: apps with a server, a database, or a secret they must keep (like your Canvas token in Project 3). Free-tier services sleep when idle and take a moment to wake up, which is fine for a personal tool. Details at [render.com/docs/free](https://render.com/docs/free).
+Render hosts backends: apps with a server, a database, or a secret to keep (like your Canvas token in Project 3). Free services sleep when idle and take a moment to wake, which is fine for a personal tool ([render.com/docs/free](https://render.com/docs/free)).
 
 1. Go to [dashboard.render.com/register](https://dashboard.render.com/register).
-2. Click the **Google** button. (GitHub, GitLab, and email also work.)
-3. Confirm your email if asked. You land on an empty dashboard.
+2. Click the **Google** button.
+3. Confirm your email if asked.
 
 ---
 
 ## Part 3: Get your tokens
 
-A token is a password with a narrower job. It lets a program act as you on one service without ever seeing your real password. The pattern is always the same: generate a token, hand it to Claude in a chat, let Claude do the work, then delete or rotate it. Treat a token like a password. That is what it is.
+A token is a password with a narrower job: it lets a program act as you on one service without ever seeing your real password. The pattern is always the same: generate, hand to Claude in a chat, let Claude work, delete or rotate ([Part 5](#part-5-token-hygiene) has the rules). Treat a token like a password. That's what it is.
 
-Every token below is shown to you **exactly once**, at the moment of creation. Copy it somewhere safe (a password manager is the right place) before closing the page.
+Every token below is shown to you **exactly once**, at creation. Copy it into a password manager before closing the page.
 
 ### 3.1 GitHub classic token
 
-This is the workhorse. With it, Claude can create repositories, push code, and set up deploy pipelines on your behalf.
+The workhorse: it lets Claude create repositories, push code, and set up deploy pipelines.
 
-1. On [github.com](https://github.com), click your profile photo (top right), then **Settings**.
-2. In the left sidebar, scroll to the bottom and click **Developer settings**.
-3. Click **Personal access tokens**, then **Tokens (classic)**. Direct link: [github.com/settings/tokens](https://github.com/settings/tokens).
-4. Click **Generate new token**, then **Generate new token (classic)**. GitHub may ask you to re-authenticate.
-5. **Note**: name it for its job, e.g. `claude-course-projects`.
-6. **Expiration**: 90 days. Do not pick "no expiration"; future-you will forget this token exists.
-7. **Scopes**: check the entire **repo** box, and check **workflow**. The first lets Claude manage repositories; the second lets it set up automated deploys. Leave everything else unchecked.
-8. Click **Generate token** and copy the token (it starts with `ghp_`). This is the only time you will see it.
+1. On [github.com](https://github.com): profile photo (top right), **Settings**, **Developer settings** (bottom of the left sidebar), **Personal access tokens**, **Tokens (classic)**. Direct link: [github.com/settings/tokens](https://github.com/settings/tokens).
+2. Click **Generate new token**, then **Generate new token (classic)**. GitHub may ask you to re-authenticate.
+3. **Note**: name it for its job, e.g. `claude-course-projects`.
+4. **Expiration**: 90 days. Don't pick "no expiration"; future-you will forget this token exists.
+5. **Scopes**: check the entire **repo** box and **workflow**. Nothing else.
+6. Click **Generate token** and copy it (starts with `ghp_`). Only time you'll see it.
 
-When the token expires, generating a new one takes two minutes and the old prompts still work.
+When it expires, a new one takes two minutes and the old prompts still work.
 
 ### 3.2 Netlify personal access token
 
-**You may not need this one.** The Netlify connector in [Part 4.2](#42-netlify-official-connector) uses a browser sign-in instead of a token, and that is the better path. Get a token only if you want the paste-a-token route or if a project asks for one.
+**You may not need this one.** The Netlify connector in [Part 4.2](#42-netlify-official-connector) uses a browser sign-in instead, and that's the better path.
 
-1. On [app.netlify.com](https://app.netlify.com), click your avatar, then **User settings**.
-2. Click **Applications**, then under **Personal access tokens** click **New access token**. Direct link: [app.netlify.com/user/applications](https://app.netlify.com/user/applications).
-3. Name it, set an **expiration date**, click **Generate token**, copy it once.
+1. On [app.netlify.com](https://app.netlify.com): avatar, **User settings**, **Applications**, then **New access token**. Direct link: [app.netlify.com/user/applications](https://app.netlify.com/user/applications).
+2. Name it, set an **expiration date**, generate, copy once.
 
 One quirk: reset your Netlify password and every existing token dies with it.
 
 ### 3.3 Render API key
 
-1. On [dashboard.render.com](https://dashboard.render.com), open your **Account Settings** and find the **API Keys** section. Direct link: [dashboard.render.com/u/settings](https://dashboard.render.com/u/settings).
-2. Click **Create API Key**, name it, copy it once.
+1. On [dashboard.render.com](https://dashboard.render.com), open **Account Settings**, then **API Keys**. Direct link: [dashboard.render.com/u/settings](https://dashboard.render.com/u/settings).
+2. Click **Create API Key**, name it, copy once.
 
-Note: a Render API key has broad access to your whole account, with no way to narrow it. Guard it accordingly, and prefer the browser sign-in route in [Part 4.3](#43-render-custom-connector) when you can.
+A Render key has broad access to your whole account with no way to narrow it. Prefer the browser sign-in route in [Part 4.3](#43-render-custom-connector) when you can.
 
 ### 3.4 Google OAuth client (for app logins)
 
-The other credentials here let Claude act as you. This one is different: it lets *other people* prove who they are to an app you built. Project 3 uses it so your Canvas dashboard asks for a Google sign-in.
+The other credentials let Claude act as you. This one lets *other people* prove who they are to an app you built. Project 3 uses it so your Canvas dashboard asks for a Google sign-in.
 
-1. Go to [console.cloud.google.com](https://console.cloud.google.com) and sign in. Create a project (top-left project selector, then **New project**). Name it for the app, e.g. `canvas-dashboard`. Switch to it before continuing, which is the step everyone forgets.
-2. In the left menu, open **Google Auth Platform**. On a fresh project it offers a **Get started** wizard. Fill in an app name and your support email.
-3. **Audience** is the one real decision. **Internal** limits sign-in to accounts in your own Google Workspace organization, which is what you want if your university runs on Google and your project sits inside its organization. If Internal is greyed out, your project is not under the org, so pick **External**. External starts in testing mode, where only the test users you list can sign in, and that is fine for a dashboard with one user.
-4. Under **Data access**, add only `openid`, `email`, and `profile`. These are non-sensitive scopes, so Google will not put you through app verification. Ask for anything more and you inherit a review process you do not want.
+1. At [console.cloud.google.com](https://console.cloud.google.com), create a project (top-left project selector, **New project**), name it for the app, e.g. `canvas-dashboard`, and **switch to it**, which is the step everyone forgets.
+2. Open **Google Auth Platform** in the left menu and run the **Get started** wizard: app name, support email.
+3. **Audience** is the one real decision. **Internal** limits sign-in to your own Google Workspace organization; pick it if it's available. If it's greyed out, pick **External**, which starts in testing mode where only listed test users can sign in. Fine for a dashboard with one user.
+4. Under **Data access**, add only `openid`, `email`, and `profile`. These are non-sensitive scopes, so no verification review. Ask for more and you inherit a review process you don't want.
 5. If you chose External, add yourself under **Test users**.
-6. Open **Clients**, click **Create client**, choose **Web application** as the type. Anything else gives you the wrong OAuth flow.
-7. Under **Authorized redirect URIs**, add both of these, adjusting the hostname:
+6. Open **Clients**, **Create client**, type **Web application**. Anything else gives you the wrong OAuth flow.
+7. Under **Authorized redirect URIs**, add both, adjusting the hostname:
    - `http://localhost:5000/auth/callback`
    - `https://YOUR-APP.onrender.com/auth/callback`
-8. Click **Create**. You get a **Client ID** (ends in `.apps.googleusercontent.com`) and a **Client secret**. Copy both. The console shows only the last four characters of the secret afterwards.
+8. Click **Create**. Copy the **Client ID** (ends in `.apps.googleusercontent.com`) and the **Client secret**; the console shows only the secret's last four characters afterwards.
 
-The client ID is not sensitive and ends up in your app anyway. The client secret is a real secret and belongs in an environment variable, same as every other token in this guide.
-
-Google login proves who the user is. It does not decide who gets in. Project 3 uses an `ALLOWED_EMAILS` list for that.
+The client ID isn't sensitive. The client secret is: rule 6 in [Part 5](#part-5-token-hygiene). Google login proves who a user is; it doesn't decide who gets in. Project 3 uses an `ALLOWED_EMAILS` list for that.
 
 ### 3.5 Canvas access token
 
-A Canvas token lets a program read and write your Canvas courses through the official Canvas API. It carries **your full Canvas permissions**, which for an instructor includes student names, submissions, and grades. That is FERPA-protected data. Three rules before you generate one:
+A Canvas token carries **your full Canvas permissions** through the official Canvas API, which for an instructor includes student names, submissions, and grades. That's FERPA-protected data. Rule 7 in [Part 5](#part-5-token-hygiene) is about this token; read it first.
 
-- **Check your institution's policy** on student data in external tools, AI tools included. An institutional Claude for Education account may be covered by a data agreement; a personal account is not. When in doubt, ask, or practice on a sandbox course with no real students. Instructure offers free "Free-for-Teacher" Canvas accounts for exactly this kind of practice.
-- **Set an expiration date** on the token.
-- **Delete the token when the task is done.** Regenerating takes one minute.
+1. In your institution's Canvas: **Account** (profile picture), **Settings**, scroll to **Approved Integrations**, click **+ New Access Token**.
+2. **Purpose**: name the task, e.g. `claude-announcement-drafts`. Set an **expiration date**.
+3. Click **Generate Token** and copy it once.
 
-Steps:
-
-1. Log into your institution's Canvas in a browser.
-2. In the left global navigation, click **Account** (your profile picture), then **Settings**.
-3. Scroll down to **Approved Integrations** and click **+ New Access Token**.
-4. **Purpose**: name the task, e.g. `claude-announcement-drafts`. Set an **expiration date**.
-5. Click **Generate Token** and copy it once.
-
-If you do not see an Approved Integrations section or the button is missing, your institution has restricted self-service tokens (several universities now require a request process instead). Contact your LMS support team.
-
-You will also need your **Canvas base URL**: the address in your browser when you use Canvas, usually `https://yourschool.instructure.com` or a custom domain like `https://canvas.uw.edu`.
+No Approved Integrations section? Your institution restricted self-service tokens; ask LMS support. You'll also need your **Canvas base URL**: the address in your browser when you use Canvas, usually `https://yourschool.instructure.com` or a custom domain like `https://canvas.uw.edu`.
 
 ### 3.6 Resend API key (optional, for sending email)
 
-Skip this unless you want an app that sends email. Two reasons you might: your app needs to notify someone (a weekly digest, a nudge to a student, an alert to yourself), or you want magic-link logins for people who cannot use the Google button from 3.4.
+Skip this unless an app needs to send email: a weekly digest, magic-link logins in Project 3. Sending email from a program looks trivial and is not: mail servers are suspicious of new senders, and a hand-rolled sender lands in spam or nowhere. Resend does the unglamorous part.
 
-Sending email from a program is one of those problems that looks trivial and is not. Mail servers are suspicious of new senders, and a hand-rolled sender lands in spam or nowhere. Resend does the unglamorous part.
+1. Sign up at [resend.com](https://resend.com). Google and GitHub sign-in both work.
+2. Open **API Keys**, click **Create API Key**, name it, give it **Sending access** only.
+3. Copy the key (starts with `re_`). Shown once.
 
-1. Go to [resend.com](https://resend.com) and sign up. Google and GitHub sign-in both work.
-2. Open **API Keys** and click **Create API Key**. Name it for the app. Give it **Sending access** only, not full access.
-3. Copy the key (it starts with `re_`). Shown once, same as every other token here.
+You can send from `onboarding@resend.dev` straight away, though it looks like a test address to readers and spam filters alike. Sending from your own address means a domain you own, with SPF and DKIM records added under **Domains** (`@uw.edu` isn't yours to configure). Free tier: 3,000 emails a month, capped at **100 a day**, and the daily cap is the one that bites.
 
-You can send from `onboarding@resend.dev` straight away with no DNS setup. It works, and it looks like a test address to both readers and spam filters. To send from your own address, add a domain under **Domains** and paste in the SPF and DKIM records. Note that `@uw.edu` is not yours to configure, so that means a domain you own.
-
-Free tier: 3,000 emails a month, capped at **100 a day**. The daily cap is the one that bites. Hit it and sending pauses until the window rolls over.
-
-**Before you email students from an app you built:** that is a message from you, in your professional capacity, sent by a program you have not tested much. Send to yourself first. Every time.
+**Before you email students from an app you built:** send to yourself first. Every time.
 
 ### 3.7 Supabase project (optional, for storing data)
 
-Skip this unless your app needs to remember something after the browser closes. Project 1 and Project 2 as written do not: the course site is files, and the quiz app holds everything in the page. The moment you want saved progress, submitted responses, or a record that accumulates over a term, you need a database, and Supabase is a Postgres database with a web dashboard and an API in front of it.
+Skip this unless your app needs to remember something after the browser closes; Projects 1 and 2 as written don't. Supabase is a Postgres database with a web dashboard and an API in front of it.
 
-1. Go to [supabase.com](https://supabase.com) and sign up. GitHub and Google sign-in both work.
+1. Sign up at [supabase.com](https://supabase.com). GitHub and Google both work.
 2. Create an organization (Free plan), then **New project**.
-3. Name it, set a **database password** (save it in your password manager now, it is shown once), and pick the region closest to your students. `West US` for the Pacific Northwest.
-4. Wait a couple of minutes while it provisions.
-5. Open **Settings**, then **API**. You need the **Project URL** and two keys.
+3. Name it, set a **database password** (save it in your password manager now, shown once), pick the region closest to your students: `West US` for the Pacific Northwest.
+4. Wait a couple of minutes, then open **Settings**, **API**, and note the **Project URL** and two keys.
 
-The two keys are not interchangeable and mixing them up is the classic Supabase mistake:
+The two keys aren't interchangeable, and mixing them up is the classic Supabase mistake:
 
-- The **anon** key (also called publishable) is designed to sit in front-end code where anyone can read it. That is fine by design, and only by design, as explained below.
-- The **service_role** key (also called secret) bypasses every access rule you write. Server-side only, environment variable only. If it ends up in a page, a repo, or a chat you later share, rotate it immediately.
+- The **anon** key (also called publishable) is designed to sit in front-end code where anyone can read it. Fine by design, and only by design.
+- The **service_role** key (also called secret) bypasses every access rule you write. Server-side only, environment variable only. If it lands in a page, a repo, or a shared chat, rotate it immediately.
 
-**Row Level Security is the part that actually protects the data.** A fresh table is open: with RLS off, the anon key lets anyone who views your page read and write every row in it. Supabase warns you about this in the dashboard and people click past it. Tell Claude to enable RLS on every table and write explicit policies, then check it yourself under **Authentication**, then **Policies**. A table with no policy and RLS off is a public spreadsheet with extra steps.
+**Row Level Security is what actually protects the data.** With RLS off, the anon key lets anyone who views your page read and write every row. Tell Claude to enable RLS on every table and write explicit policies, then check it yourself under **Authentication**, **Policies**. A table with no policy and RLS off is a public spreadsheet with extra steps.
 
-Free tier as of August 2026: 500 MB of database, two active projects, no backups. Two things follow from that.
+Free tier as of August 2026: 500 MB of database, two active projects, no backups, and **projects pause after about a week without database activity**. That last one ruins teaching tools: you build a quiz app in October, students hit it at 11pm the night before the December final, and the project has been asleep for six weeks. If the app has to be up on a date you care about, resume and check it a few days ahead, or set up the keep-alive job in Part 7. If the data matters, ask Claude for a CSV export script and run it now and then.
 
-**Free projects pause after about a week without database activity.** This is the one that ruins a teaching tool. You build a quiz app in October, students use it before the December final, and by then the project has been asleep for six weeks and the app returns errors. Supabase emails a warning first and restoring takes a click and roughly thirty seconds, but you will not be watching, and the students hit it at 11pm the night before. If an app has to be up on a date you care about, resume it a few days ahead and check it yourself, or ask Claude for a scheduled GitHub Action that pings the database every few days.
+On student data: a database is one more third party holding whatever you put in it. The privacy questions from rule 7 in Part 5 apply with more force; named submissions deserve a word with your privacy office first.
 
-**No backups on the free plan.** Nothing is snapshotted for you. If the data matters, ask Claude for a script that exports the tables to CSV, and run it now and then.
-
-**On student data:** a Supabase project is one more third party holding whatever you put in it. The privacy questions in 3.5 apply here with more force, because a database persists by definition. Anonymous or aggregate data is a different conversation from named submissions, and named submissions deserve a word with your privacy office first.
-
-Claude can also talk to Supabase through a connector, the same way it does Netlify and Render (see Part 4). Enable it from the connectors menu if you would rather not paste keys into chats.
+Supabase also has a connector (Part 4) if you'd rather not paste keys into chats.
 
 ---
 
 ## Part 4: Connect Claude to your accounts
 
-There are two ways Claude reaches your accounts, and this guide uses both.
+Two routes, and this guide uses both.
 
-**Connectors** are set up once in Claude's settings. You sign in through your browser (OAuth), no token changes hands, and you can revoke access with one click. Use these when they exist: Netlify and Render both have one.
+**Connectors** are set up once in Claude's settings: you sign in through your browser (OAuth), no token changes hands, and you can revoke access with one click. Use these when they exist. Netlify and Render both have one.
 
-**Pasting a token in chat** works for everything else. You hand Claude a token in your message, Claude uses its built-in code environment to call the service's API, done. It is cruder but universal, and you control the blast radius by controlling the token. GitHub and Canvas use this route.
-
-One caveat about the paste route: the token sits in that conversation's history afterwards. Delete the conversation when the work is done, or rotate the token. Pick one and actually do it.
+**Pasting a token in chat** works for everything else. Cruder but universal, and you control the blast radius by controlling the token. GitHub and Canvas use this route. Cleanup is rule 4 in [Part 5](#part-5-token-hygiene).
 
 ### 4.1 Where connectors live
 
-- Open [claude.ai/customize/connectors](https://claude.ai/customize/connectors) (also reachable via **Settings > Connectors**).
-- Inside a chat, connectors are toggled per conversation: click the **+** (or sliders) button at the lower left of the message box, then **Connectors**.
+- Open [claude.ai/customize/connectors](https://claude.ai/customize/connectors), also reachable via **Settings > Connectors**.
+- Inside a chat, connectors are toggled per conversation: the **+** (or sliders) button at the lower left of the message box, then **Connectors**.
 
 The Free plan includes directory connectors plus **one** custom connector, which is exactly enough for this guide.
 
 ### 4.2 Netlify (official connector)
 
-1. On the Connectors page, find **Netlify** in the connector directory and click **Connect**.
-2. A browser window opens; sign into Netlify and click **Authorize**.
-3. That is the whole setup. No token.
+1. On the Connectors page, find **Netlify** in the directory and click **Connect**.
+2. Sign into Netlify in the browser window that opens and click **Authorize**. That's the whole setup. No token.
 
-If Netlify is not listed in your directory, add it as a custom connector with the URL `https://netlify-mcp.netlify.app/mcp`.
-
-Test it in a new chat: *"Using the Netlify connector, list my Netlify sites."* An empty list is the correct answer right now.
+If Netlify isn't listed in your directory, add it as a custom connector with the URL `https://netlify-mcp.netlify.app/mcp` (on Free that spends your one custom-connector slot, so Render in [4.3](#43-render-custom-connector) drops back to its API key). Test it in a new chat: *"Using the Netlify connector, list my Netlify sites."* An empty list is the correct answer right now.
 
 ### 4.3 Render (custom connector)
 
-Render's connector is added by URL. Per [Render's docs](https://render.com/docs/mcp-server):
+Per [Render's docs](https://render.com/docs/mcp-server):
 
 1. On the Connectors page, click **Add custom connector**.
 2. **Name**: `render`. **URL**: `https://mcp.render.com/mcp`.
 3. Open **Advanced settings** and set **OAuth Client ID** to `claude`.
-4. Click **Add**, then **Connect**, and approve in the browser window that opens. No API key needed for this route.
+4. Click **Add**, then **Connect**, and approve in the browser window. No API key needed.
 
-First prompt in any chat that uses it: *"Set my Render workspace to [YOUR WORKSPACE NAME]"* (your workspace name is at the top left of the Render dashboard). Then try *"List my Render services."*
-
-Prefer not to use a connector? Paste your API key from [3.3](#33-render-api-key) into the chat instead and Claude will call the Render API directly.
+First prompt in any chat that uses it: *"Set my Render workspace to [YOUR WORKSPACE NAME]"* (top left of the Render dashboard). Then try *"List my Render services."* Prefer not to use a connector? Paste the API key from [3.3](#33-render-api-key) into the chat instead.
 
 ### 4.4 GitHub (paste the token)
 
@@ -291,7 +243,7 @@ No connector needed. In any chat, hand Claude the classic token from [3.1](#31-g
 >
 > Create a public repo called `test-drive` under my account, add a README that says hello, and send me the link. Do not put the token in any file.
 
-Claude uses its code environment to run `git` and call the GitHub API with your token. That last line about not putting the token in a file is belt-and-braces. Say it anyway.
+That last line is belt-and-braces. Say it anyway.
 
 ### 4.5 Canvas (paste the token)
 
@@ -301,7 +253,7 @@ Same pattern, plus the base URL:
 >
 > List my active courses with their course IDs. Read-only for now; do not change anything.
 
-Start read-only. Once you trust the setup, you can allow writes (posting an announcement, creating an assignment) one action at a time. And per [3.5](#35-canvas-access-token): sandbox course first, delete the token after.
+Start read-only. Once you trust the setup, allow writes one action at a time.
 
 ---
 
@@ -310,32 +262,30 @@ Start read-only. Once you trust the setup, you can allow writes (posting an anno
 Seven rules. All seven together take less time than cleaning up one compromised account.
 
 1. **One token per purpose**, named for the job. Never reuse a token across unrelated projects.
-2. **Always set an expiration.** 90 days on GitHub, explicit dates on Netlify, Render (where offered), and Canvas.
-3. **Tokens never go in files.** Not in code, not in a README, not anywhere in a repo. Tell Claude this explicitly every time it builds something. For deployed apps, secrets belong in the hosting service's environment variables (Project 3 shows how).
-4. **Delete or rotate after a heavy session.** Especially any session where a token was pasted into chat. Rotation costs two minutes.
-5. **If a token leaks**, revoke it first and investigate second. Every service above has a revoke/delete button next to the token list.
+2. **Always set an expiration.**
+3. **Tokens never go in files.** Not in code, not in a README, not anywhere in a repo. Tell Claude this explicitly every time it builds something. Deployed apps keep secrets in the hosting service's environment variables (Project 3 shows how).
+4. **Delete or rotate after a heavy session.** A token pasted into a chat sits in that conversation's history afterwards: delete the conversation when the work is done, or rotate the token. Pick one and actually do it. Rotation costs two minutes.
+5. **If a token leaks, revoke first, investigate second.** Every service above has a delete button next to the token list.
 6. **An OAuth client secret is a token too.** Environment variable, never the repo. If it leaks, rotate it in the Google console under **Clients**.
-7. **Canvas tokens outrank the other rules.** They reach student data. Your institution's policy beats anything in this guide.
+7. **Canvas tokens outrank the other rules.** They reach student data. Check your institution's policy on student data in external tools, AI included: an institutional Claude for Education account may be covered by a data agreement; a personal account is not. When in doubt, ask, or practice on a sandbox course (Instructure's free "Free-for-Teacher" accounts exist for exactly this). Delete the token the moment the task is done; regenerating takes a minute. Your institution's policy beats anything in this guide.
 
 ---
 
 ## Part 6: Three projects
 
-Each project has a starter prompt. Paste it into a fresh chat, fill in the CAPITALIZED bits, change whatever you like. Expect some back and forth before it is right. That is how this works.
+Each project has a starter prompt. Paste it into a fresh chat, fill in the CAPITALIZED bits, change whatever you like. Expect some back and forth before it's right. That's how this works.
 
-**Every starter prompt ends with "Ask me any questions before you start."** Keep that line. I think it is the most useful sentence in this guide. Claude guesses when it does not know, and the guesses are plausible and wrong in the ways that eat your afternoon: invented office hours, a 10-week schedule, some framework you never asked for. Told to check first, it comes back with three questions and then builds the thing you meant.
+**Every starter prompt ends with "Ask me any questions before you start."** Keep that line; I think it's the most useful sentence in this guide. Without it Claude guesses, and the guesses are plausible and wrong in the ways that eat your afternoon: invented office hours, a 10-week schedule, some framework you never asked for. Told to check first, it comes back with three questions and builds the thing you meant.
 
-It runs the other way too. When something confuses you, ask. "Why React here?" "What does deploy actually mean?" "Explain that command, I do not recognize it." You cannot wear out its patience, and nobody else is watching. Treat it like a colleague who happens to have read all the documentation.
+It runs the other way too. When something confuses you, ask: "Why React here?" "What does deploy actually mean?" You can't wear out its patience, and nobody else is watching.
 
 ### Project 1: Course website (30 to 60 minutes)
 
 **What you get.** A public course site: description, schedule, office hours, policies. Version-controlled on GitHub, live on Netlify, updated by asking Claude for edits.
 
-**You need.** GitHub token (3.1), Netlify connector (4.2). Enable the Netlify connector in the chat.
+**You need.** GitHub token (3.1) and the Netlify connector (4.2), enabled in the chat.
 
-**Start from last year's syllabus.** This is the shortcut. Drag your existing syllabus into the chat (Word, PDF, or a Canvas page pasted in as text) and let Claude pull the structure out of it: description, objectives, grading breakdown, policies, weekly topics. Correcting a draft is much faster than dictating one, and the result sounds like your course because it came from your course.
-
-No syllabus handy? The second prompt starts from a blank page. Both end up in the same place.
+**Start from last year's syllabus if you have one.** Drag it into the chat (Word, PDF, or a Canvas page pasted as text) and let Claude pull the structure out of it. Correcting a draft is much faster than dictating one, and the result sounds like your course because it came from your course. No syllabus handy? The second prompt starts from a blank page.
 
 **With a syllabus to upload:**
 
@@ -396,15 +346,15 @@ dates on the closure days, and do not silently shift material into
 finals week.
 ```
 
-Not at UW? Swap in your own calendar in the same shape. Spell out the length either way. The eleven-week Autumn quarter is a UW oddity, and left to itself Claude assumes a fifteen-week semester and hands you a schedule with four weeks that do not exist.
+Not at UW? Swap in your own calendar in the same shape, and spell out the length. The eleven-week Autumn quarter is a UW oddity; left to itself Claude assumes a fifteen-week semester and hands you four weeks that don't exist.
 
-**Then try.** "Change my office hours to Wednesdays 1-3pm and redeploy." "Add a resources page with these five links." "The Thanksgiving week only has two class days, rebalance the topics." Each edit lands in the repo, so you have the full history.
+**Then try.** "Change my office hours to Wednesdays 1-3pm and redeploy." "The Thanksgiving week only has two class days, rebalance the topics." Each edit lands in the repo, so you have the full history.
 
-**Stretch.** Point a custom domain at it, or ask Claude to add your publications page.
+**Stretch.** Point a custom domain at it, or add your publications page.
 
 ### Project 2: Practice-problem app (1 to 2 hours)
 
-**What you get.** An interactive quiz for your subject. Students pick answers, get instant feedback and explanations, see a score. No accounts, no server, no student data collected: it is a static page, which keeps both the engineering and the privacy story simple.
+**What you get.** An interactive quiz for your subject: students pick answers, get instant feedback and explanations, see a score. No accounts, no server, no student data collected, which keeps both the engineering and the privacy story simple.
 
 **You need.** Same as Project 1: GitHub token, Netlify connector.
 
@@ -432,11 +382,9 @@ the URL.
 Ask me any questions before you start.
 ```
 
-**Then try.** Paste in your own question bank ("replace the questions with these 20"). Upload an old problem set or exam and ask Claude to build the quiz from those problems instead of inventing new ones. Ask for LaTeX-rendered math if your subject needs it. Ask for a topic filter if you add more questions.
+**Then try.** Paste in your own question bank ("replace the questions with these 20"), or upload an old exam and have Claude build the quiz from those problems instead of inventing new ones. Ask for LaTeX-rendered math if your subject needs it.
 
-**Optional: save results with Supabase.** As built, this app stores nothing, which is why it needs no privacy conversation. Adding a database changes that, so add it deliberately. Anonymous aggregates ("question 7 is missed by 80 percent of attempts") are useful for your teaching and carry almost none of the risk. Named per-student results are a different thing entirely.
-
-With a project set up per [3.7](#37-supabase-project-optional-for-storing-data):
+**Optional: save results with Supabase.** Adding a database changes the privacy story, so do it deliberately: anonymous aggregates ("question 7 is missed by 80 percent of attempts") carry almost none of the risk; named per-student results are a different thing entirely. With a project set up per [3.7](#37-supabase-project-optional-for-storing-data):
 
 ```text
 Add anonymous result tracking to the quiz app using Supabase.
@@ -456,15 +404,15 @@ sorted worst first.
 Ask me any questions before you start.
 ```
 
-**Read the questions before you share the link.** Claude writes plausible questions, but you still need to check.
+**Read the questions before you share the link.** Claude writes plausible questions. You still need to check.
 
 ### Project 3: Canvas assistant (an afternoon)
 
-**What you get.** A web dashboard, hosted on Render, that talks to the Canvas API: it lists your courses, shows assignment submission counts and a grade distribution, and drafts announcement text you can paste into Canvas. Your Canvas token lives in a Render environment variable, never in the code.
+**What you get.** A web dashboard, hosted on Render, that talks to the Canvas API: your course list, assignment submission counts, a grade distribution, and draft announcement text you can paste into Canvas. The Canvas token lives in a Render environment variable, never in the code.
 
-**You need.** GitHub token (3.1), Render connector (4.3), Canvas token and base URL (3.5), Google OAuth client (3.4). Optionally a Resend key (3.6) if you add magic links in Step 4. Read the FERPA notes in 3.5 first. Start on a sandbox course with no real students.
+**You need.** GitHub token (3.1), Render connector (4.3), Canvas token and base URL (3.5), Google OAuth client (3.4), optionally a Resend key (3.6) for Step 4. Rule 7 in Part 5 first.
 
-**Where this app lives.** Free Render services are public web services. There is no private option on the free tier, so the URL is reachable by anyone on the internet who finds it, and `canvas-dashboard.onrender.com` is not hard to guess. Step 3 adds Google sign-in and an email allowlist.
+**Where this app lives.** Free Render services are public: there's no private option, so the URL is reachable by anyone who finds it, and `canvas-dashboard.onrender.com` isn't hard to guess. Step 3 adds the lock.
 
 **Step 1, explore in chat first** (no app yet, just check the plumbing):
 
@@ -501,9 +449,7 @@ time), deploy, and give me the URL.
 Ask me any questions before you start.
 ```
 
-**Step 3, put a real lock on it:**
-
-Now the dashboard is live and anyone who finds the URL can read it. Add Google sign-in. You need the client ID and secret from [3.4](#34-google-oauth-client-for-app-logins) and your app's URL from Step 2, which is also the hostname to put in the redirect URI back in the Google console.
+**Step 3, put a real lock on it.** You need the client ID and secret from [3.4](#34-google-oauth-client-for-app-logins) and your app's URL from Step 2, which is also the hostname for the redirect URI back in the Google console.
 
 ```text
 Add Google sign-in to the dashboard.
@@ -532,13 +478,9 @@ which redirect URI to add in the Google console.
 Ask me any questions before you start.
 ```
 
-Test it in a private browser window. Sign in with your own account and you should reach the dashboard. Sign in with a different Google account and you should be refused. If the second test lets you in, the allowlist is not being checked and the app is still wide open, so stop and tell Claude exactly that.
+Test in a private browser window: your own account should reach the dashboard, a different Google account should be refused. If the second test lets you in, the allowlist isn't being checked and the app is still wide open. Stop and tell Claude exactly that.
 
-**Step 4, optional: magic links instead of Google.**
-
-Skip this if Google login works for everyone who needs in. It exists for the case where it does not: a co-instructor at another institution, a TA whose account is on a different provider, anyone the Google button turns away. A magic link is a one-time sign-in URL emailed to an address you have already approved. No password, no Google account.
-
-You need a Resend API key from [3.6](#36-resend-api-key-optional-for-sending-email). Add magic links alongside Google sign-in, not instead of it.
+**Step 4, optional: magic links instead of Google.** Skip this if Google login works for everyone who needs in. It exists for the co-instructor at another institution or the TA the Google button turns away: a one-time sign-in URL emailed to an address you've already approved. You need the Resend key from [3.6](#36-resend-api-key-optional-for-sending-email). Add it alongside Google sign-in, not instead of it.
 
 ```text
 Add magic-link login as a second option next to the existing Google
@@ -566,27 +508,21 @@ everyone out.
 Ask me any questions before you start.
 ```
 
-Test the failure cases, not the happy path. Use a link twice (the second should be refused), request one for an address that is not on the allowlist (nothing should arrive, and the page should not say so), and let one sit for twenty minutes before clicking.
-
-Worth saying plainly: a magic link in an inbox is a key to your dashboard. Anyone reading that inbox can use it. That is the tradeoff you accept for skipping passwords, and it is why the 15-minute expiry matters.
+Test the failure cases, not the happy path: use a link twice (the second should be refused), request one for an address not on the allowlist (nothing should arrive, and the page shouldn't say so), and let one sit for twenty minutes before clicking. Worth saying plainly: a magic link in an inbox is a key to your dashboard, which is why the 15-minute expiry matters.
 
 **Then try.** "Add a page that flags students with no submissions in the last two weeks." "Draft individual nudge emails I can review." Keep the whole thing in draft-and-review mode. The professor clicks send.
-
-**Free-tier reality.** The free Render service sleeps when idle; the first load after a quiet spell takes a moment. Fine for a personal dashboard.
 
 ---
 
 ## Part 7: Scheduled jobs with GitHub Actions
 
-You already have this one. It needs no new account, no token, and no server, and it closes several gaps the projects leave open.
+You already have this one: no new account, no token, no server. GitHub Actions runs a script on a schedule in GitHub's infrastructure. Public repositories get unlimited minutes; private ones get a free monthly allowance that a few small cron jobs won't dent. Three uses here:
 
-GitHub Actions runs a script on a schedule in GitHub's infrastructure. Public repositories get unlimited minutes; private ones get a monthly allowance on the Free plan that a few small cron jobs will not come close to using. Three things it is good for here:
+- **Keeping a Supabase project awake.** A query every few days resets the inactivity clock (3.7), so the quiz app still works in December.
+- **A weekly digest.** Pull from Canvas, email yourself a summary through Resend (3.6).
+- **Backups.** Export your Supabase tables to CSV on a schedule and commit them: the backup the free tier doesn't give you.
 
-- **Keeping a Supabase project awake.** A query every few days resets the inactivity clock from 3.7, so the quiz app still works in December.
-- **A weekly digest.** Pull from Canvas, email yourself a summary through Resend (3.6). No always-on server, because the job runs for thirty seconds and stops.
-- **Backups.** Export your Supabase tables to CSV on a schedule and commit them, which is the backup the free tier does not give you.
-
-Secrets go in the repository, never in the workflow file: **Settings**, then **Secrets and variables**, then **Actions**, then **New repository secret**. The workflow reads them by name, and anyone reading your code sees the name and not the value.
+Secrets go in the repository, never in the workflow file: **Settings**, **Secrets and variables**, **Actions**, **New repository secret**. The workflow reads them by name; anyone reading your code sees the name, not the value.
 
 ```text
 Add a GitHub Actions workflow to this repo that runs every three days and
@@ -603,15 +539,13 @@ looks like in the Actions tab.
 Ask me any questions before you start.
 ```
 
-Two things about scheduled workflows that catch people out. The times are approximate and can run late when GitHub is busy, so never schedule anything to the minute. And **GitHub disables scheduled workflows in a repository with no activity for 60 days**, emailing you first. On a repo you are actively working in this never comes up. On a keep-alive repo you deliberately ignore, it is exactly the situation, and the job stops silently right when you have stopped thinking about it. Check the Actions tab at the start of each term.
+Two gotchas. Scheduled times are approximate and can run late when GitHub is busy, so never schedule anything to the minute. And **GitHub disables scheduled workflows in a repository with no activity for 60 days**, emailing you first. On a keep-alive repo you deliberately ignore, that's exactly the situation, and the job stops right when you've stopped thinking about it. Check the Actions tab at the start of each term.
 
 ---
 
 ## Part 8: Appendix, Claude Code
 
-Everything so far runs in the claude.ai chat. Claude Code is the same Claude working in a terminal on your own computer: it reads and edits files in a folder, runs programs, and uses git directly. Worth adopting when projects outgrow the chat window, when you want the files local, or when a session should pick up exactly where the last one stopped.
-
-Two things up front. It needs a paid plan (Pro or higher, included in the subscription, so no per-use metering and no API key to look after). And it lives in a terminal, which sounds worse than it is. You type English at it, same as the chat.
+Everything so far runs in the claude.ai chat. Claude Code is the same Claude working in a terminal on your own computer: it reads and edits files in a folder, runs programs, and uses git directly. Worth adopting when projects outgrow the chat window or you want the files local. It needs a paid plan (included in Pro, no API key to look after), and it lives in a terminal, which sounds worse than it is. You type English at it, same as the chat.
 
 ### Install
 
@@ -647,12 +581,12 @@ claude mcp add --transport http netlify https://netlify-mcp.netlify.app/mcp
 claude mcp add --transport http --client-id claude render https://mcp.render.com/mcp
 ```
 
-Then inside a session, type `/mcp` and authenticate each one in the browser. Your GitHub token gets pasted into the session the same way as in chat, or configured once with `git` credentials if you go further down this road.
+Then inside a session, type `/mcp` and authenticate each one in the browser. The GitHub token gets pasted into the session the same way as in chat.
 
 ### Two habits
 
-- Run `/init` in a project folder once: Claude Code writes a `CLAUDE.md` file describing the project, which future sessions read automatically. Standing instructions ("never commit tokens", "log changes in CHANGES.md") belong there.
-- Prefer terminal-free? The Claude Code **VS Code extension** gives the same tool a graphical home.
+- Run `/init` once per project folder: Claude Code writes a `CLAUDE.md` describing the project, which future sessions read automatically. Standing instructions ("never commit tokens", "log changes in CHANGES.md") belong there.
+- Prefer terminal-free? The **VS Code extension** gives the same tool a graphical home.
 
 Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 
@@ -660,45 +594,45 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 
 ## Troubleshooting
 
-**Claude says it cannot install a package, or a data-analysis step fails.** Network egress is off. Turn it on in a browser: **Settings > Capabilities**, very bottom of the page ([Part 1.3](#13-turn-on-network-egress-do-this-in-a-browser)). The phone app does not show this setting.
+**Claude cannot install a package, or a data-analysis step fails.** Network egress is off. Turn it on in a browser: **Settings > Capabilities**, very bottom of the page ([Part 1.3](#13-turn-on-network-egress-do-this-in-a-browser)). The phone app doesn't show this setting.
 
-**Claude built something different from what you meant.** You did not ask it to ask. Add "Ask me any questions before you start" and run it again. One extra exchange, and you skip the rebuild.
+**Claude built something different from what you meant.** You didn't ask it to ask. Add "Ask me any questions before you start" and run it again.
 
-**"Bad credentials" or 401 when Claude uses a token.** The token expired, a scope is missing (GitHub needs `repo` and `workflow`), or the paste picked up a stray space. Generate a fresh one; it is faster than debugging.
+**"Bad credentials" or 401 when Claude uses a token.** Expired token, missing scope (GitHub needs `repo` and `workflow`), or a stray space in the paste. Generate a fresh one; it's faster than debugging.
 
-**Google sign-in fails with `redirect_uri_mismatch`.** The URI registered in the Google console and the one your app sends have to match exactly: scheme, hostname, port, path, no trailing slash. Paste both into the chat and let Claude compare them character by character. This is the single most common OAuth error and it is always a typo.
+**Google sign-in fails with `redirect_uri_mismatch`.** The URI registered in the Google console and the one your app sends must match exactly: scheme, hostname, port, path, no trailing slash. Paste both into the chat and let Claude compare them character by character. It's always a typo.
 
-**Google says the app is unverified.** Expected for an External app in testing mode. Click through the advanced link. It goes away if you switch the project to Internal, and it never applied to you in the first place if you stayed on `openid`, `email`, and `profile`.
+**Google says the app is unverified.** Expected for an External app in testing mode; click through the advanced link. It never applies if you stayed on `openid`, `email`, and `profile`.
 
-**A colleague you added to ALLOWED_EMAILS still cannot get in.** On an External app they also need to be listed under **Test users** in the Google console. Two separate lists, both required.
+**A colleague on ALLOWED_EMAILS still cannot get in.** On an External app they also need to be under **Test users** in the Google console. Two separate lists, both required.
 
-**A scheduled workflow stopped running.** Look for a 60-day inactivity disable (there is a banner in the Actions tab and a button to re-enable). Otherwise check that the cron syntax is what you meant, since a wrong field silently means a schedule you did not intend.
+**A scheduled workflow stopped running.** Look for the 60-day inactivity banner in the Actions tab (there's a re-enable button). Otherwise check the cron syntax, since a wrong field silently means a schedule you didn't intend.
 
-**An app that worked in October is broken in December.** Most likely a paused Supabase project (about a week of inactivity does it) or a sleeping Render free service. Open the relevant dashboard and look at the project status before you debug any code.
+**An app that worked in October is broken in December.** A paused Supabase project (about a week of inactivity does it) or a sleeping Render free service. Check the dashboards before you debug any code.
 
-**Magic-link emails never arrive.** Check the Resend dashboard logs first, which tell you whether the send failed or the mail was delivered and filtered. Mail from `onboarding@resend.dev` lands in spam routinely. Also check whether you hit the 100-a-day free cap, in which case sending is paused rather than broken.
+**Magic-link emails never arrive.** Check the Resend dashboard logs first: they tell you whether the send failed or the mail was delivered and filtered. Mail from `onboarding@resend.dev` lands in spam routinely. Also check the 100-a-day cap, which pauses sending rather than breaking it.
 
-**Canvas has no "Approved Integrations" section.** Your institution turned off self-service tokens. Ask LMS support. Several universities hand them out through a request form instead.
+**Canvas has no "Approved Integrations" section.** Your institution turned off self-service tokens. Ask LMS support; several universities hand them out through a request form instead.
 
 **Claude ignores a connector.** Enable it for that conversation: **+** button at the lower left of the message box, then **Connectors**, toggle it on. Also confirm it shows as connected on the Connectors settings page.
 
 **"Add custom connector" refuses or is missing.** The Free plan allows one custom connector; remove an old one or upgrade.
 
-**Render app is slow on first load.** Free services sleep when idle. It wakes on its own; wait a moment and reload.
+**Render app is slow on first load.** Free services sleep when idle. Wait a moment and reload.
 
 **You hit the usage limit mid-project.** It resets on a rolling 5-hour window. Come back after the reset, or take it as your sign about Pro.
 
-**Everything worked yesterday and today it does not.** Something upstream changed, or a token quietly expired. Paste the error into the chat and ask Claude what broke. It is better at reading its own stack traces than you would expect.
+**Everything worked yesterday and today it does not.** Something upstream changed, or a token quietly expired. Paste the error into the chat and ask Claude what broke. It's better at reading its own stack traces than you'd expect.
 
 **A token got committed to a repo by accident.** Revoke it immediately (the service's token page has a delete button), then generate a new one. Revoking first makes the leaked copy worthless; cleaning git history is optional afterwards.
 
 ## Official documentation
 
 - Claude plans: [claude.com/pricing](https://claude.com/pricing) · Connectors: [support.claude.com](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp)
-- GitHub accounts and tokens: [docs.github.com](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) · [github.com/settings/tokens](https://github.com/settings/tokens)
+- GitHub accounts and tokens: [docs.github.com](https://docs.github.com/en/account-and-profile/how-tos/account-management/creating-an-account-on-github) · [github.com/settings/tokens](https://github.com/settings/tokens)
 - Netlify: [docs.netlify.com](https://docs.netlify.com/api-and-cli-guides/api-guides/get-started-with-api/) and the [Netlify + Claude page](https://www.netlify.com/with/claude/)
 - Render: [render.com/docs/mcp-server](https://render.com/docs/mcp-server) · [render.com/docs/free](https://render.com/docs/free)
-- Canvas API and tokens: [Canvas OAuth docs](https://www.canvas.instructure.com/doc/api/file.oauth.html) · [managing access tokens](https://community.canvaslms.com/t5/Canvas-Basics-Guide/How-do-I-manage-API-access-tokens-in-my-user-account/ta-p/615312)
+- Canvas API and tokens: [Canvas OAuth docs](https://canvas.instructure.com/doc/api/file.oauth.html) · [managing access tokens](https://community.instructure.com/en/kb/articles/662901-how-do-i-manage-api-access-tokens-in-my-user-account)
 - Claude Code: [code.claude.com/docs](https://code.claude.com/docs)
 
 ---

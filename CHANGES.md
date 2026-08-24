@@ -2,6 +2,10 @@
 
 ## 2026-08-21
 
+- README replaced with the author's own edited version. Structure and all
+  section headings unchanged; prose tightened throughout (46 KB to 39 KB).
+  PDF rebuilt from it: 27 pages to 24.
+
 - Added 3.4, creating a Google OAuth client (current Google Auth Platform
   UI, Internal vs External, non-sensitive scopes only, redirect URIs).
   Canvas token renumbered to 3.5; cross-references updated.
