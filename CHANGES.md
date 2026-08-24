@@ -1,5 +1,12 @@
 # Changes
 
+## 2026-08-23
+
+- Corrected the Google console navigation in 3.4: the menu path is
+  APIs & Services > OAuth consent screen, not a top-level "Google Auth
+  Platform" item. Added the direct URL, the Credentials route for creating
+  the client, and a note that the older and newer layouts differ.
+
 ## 2026-08-21
 
 - README replaced with the author's own edited version. Structure and all

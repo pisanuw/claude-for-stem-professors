@@ -144,15 +144,17 @@ A Render key has broad access to your whole account with no way to narrow it. Pr
 The other credentials let Claude act as you. This one lets *other people* prove who they are to an app you built. Project 3 uses it so your Canvas dashboard asks for a Google sign-in.
 
 1. At [console.cloud.google.com](https://console.cloud.google.com), create a project (top-left project selector, **New project**), name it for the app, e.g. `canvas-dashboard`, and **switch to it**, which is the step everyone forgets.
-2. Open **Google Auth Platform** in the left menu and run the **Get started** wizard: app name, support email.
-3. **Audience** is the one real decision. **Internal** limits sign-in to your own Google Workspace organization; pick it if it's available. If it's greyed out, pick **External**, which starts in testing mode where only listed test users can sign in. Fine for a dashboard with one user.
-4. Under **Data access**, add only `openid`, `email`, and `profile`. These are non-sensitive scopes, so no verification review. Ask for more and you inherit a review process you don't want.
+2. In the left menu, open **APIs & Services**, then **OAuth consent screen**. (Direct link: [console.cloud.google.com/auth/overview](https://console.cloud.google.com/auth/overview).) Fill in an app name and support email if it asks.
+3. **Audience** is the one real decision. **Internal** limits sign-in to your own Google Workspace organization; pick it if it's available, which it should be if your project sits in your university's organization. If it's greyed out, pick **External**, which starts in testing mode where only listed test users can sign in. Fine for a dashboard with one user.
+4. Under **Data access** (**Scopes** in the older layout), add only `openid`, `email`, and `profile`. These are non-sensitive scopes, so no verification review. Ask for more and you inherit a review process you don't want.
 5. If you chose External, add yourself under **Test users**.
-6. Open **Clients**, **Create client**, type **Web application**. Anything else gives you the wrong OAuth flow.
+6. Open **Clients** in the same section, or **APIs & Services** then **Credentials** then **Create credentials** then **OAuth client ID**. Set the type to **Web application**. Anything else gives you the wrong OAuth flow.
 7. Under **Authorized redirect URIs**, add both, adjusting the hostname:
    - `http://localhost:5000/auth/callback`
    - `https://YOUR-APP.onrender.com/auth/callback`
 8. Click **Create**. Copy the **Client ID** (ends in `.apps.googleusercontent.com`) and the **Client secret**; the console shows only the secret's last four characters afterwards.
+
+Google is midway through renaming this area to **Google Auth Platform**, so depending on your account you'll land on either the older consent-screen wizard or a page with **Branding**, **Audience**, **Data access**, and **Clients** tabs. Same settings, different arrangement.
 
 The client ID isn't sensitive. The client secret is: rule 6 in [Part 5](#part-5-token-hygiene). Google login proves who a user is; it doesn't decide who gets in. Project 3 uses an `ALLOWED_EMAILS` list for that.
 
