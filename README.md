@@ -6,7 +6,7 @@ You've probably seen the demo where someone types a sentence and an app appears.
 
 **Version: 21 Aug 2026**, the day I checked every click-path against the vendor docs. Buttons move. If something isn't where I say it is, check the linked docs.
 
-Run `./build-pdf.sh` if you want a PDF version.
+Latest version: [github.com/pisanuw/claude-for-stem-professors](https://github.com/pisanuw/claude-for-stem-professors). Run `./build-pdf.sh` if you want a PDF version.
 
 **The three destination projects** (details in [Part 6](#part-6-three-projects)):
 
@@ -637,6 +637,6 @@ Full documentation: [code.claude.com/docs](https://code.claude.com/docs).
 
 ---
 
-Version 21 Aug 2026. Maintained by [Yusuf Pisan](https://github.com/pisanuw), <pisan@uw.edu>. Corrections and questions: email me or open an issue.
+Version 21 Aug 2026. The current version lives at [github.com/pisanuw/claude-for-stem-professors](https://github.com/pisanuw/claude-for-stem-professors). Maintained by [Yusuf Pisan](https://github.com/pisanuw), <pisan@uw.edu>. Corrections and questions: email me or open an issue.
 
 Written for colleagues who suspect this stuff might be useful but have not had a free afternoon to find out. Now you have a map for the afternoon. Let me know how it goes. :-)
